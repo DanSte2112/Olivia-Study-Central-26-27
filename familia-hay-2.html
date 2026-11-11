@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Mi Familia y Hay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Mulish:ital,wght@0,400;0,600;0,800;1,400&display=swap">
+<style>
+/* Layout: sticky nav (Home · Aprende · Practica · Examen · Progreso); one card at a time. Palette: terracotta-free warm teal + marigold, family-album feel */
+:root{
+  --bg:#f4f6f5; --surface:#ffffff; --ink:#1c2826; --muted:#5b6b68; --line:#dbe3e1;
+  --accent:#0d7a6f; --accent-ink:#ffffff; --accent-soft:#dcf0ed; --mari:#e59a12; --mari-soft:#fcefd6;
+  --ok:#1d7f4b; --ok-soft:#e0f3e8; --bad:#bd3b2c; --bad-soft:#fae5e1;
+  --display:"Baloo 2","Trebuchet MS",system-ui,sans-serif;
+  --body:"Mulish","Segoe UI",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f1716; --surface:#172220; --ink:#e8f1ef; --muted:#9fb2ae; --line:#2a3a37;
+  --accent:#5fd0c3; --accent-ink:#0f1716; --accent-soft:#183a36; --mari:#ffc14d; --mari-soft:#3a2e15;
+  --ok:#62d398; --ok-soft:#143422; --bad:#ff8c7d; --bad-soft:#3d1f1b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1716; --surface:#172220; --ink:#e8f1ef; --muted:#9fb2ae; --line:#2a3a37;
+  --accent:#5fd0c3; --accent-ink:#0f1716; --accent-soft:#183a36; --mari:#ffc14d; --mari-soft:#3a2e15;
+  --ok:#62d398; --ok-soft:#143422; --bad:#ff8c7d; --bad-soft:#3d1f1b; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+.app{max-width:780px;margin:0 auto;padding-block:16px 48px;padding-inline:16px;display:flex;flex-direction:column;gap:16px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-family:var(--display);font-weight:800;font-size:1.65rem;line-height:1.05;margin:0;cursor:pointer}
+.brand small{display:block;font:400 14px var(--body);color:var(--muted)}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:5px 12px;font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.nav{display:flex;gap:6px;flex-wrap:wrap;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:8px;margin-block:-8px;border-bottom:1px solid var(--line)}
+.nav button{font:800 15px var(--body);padding:8px 15px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.nav button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.nav #nav-home{border-color:var(--accent);color:var(--accent)}
+.nav #nav-home[aria-pressed="true"]{color:var(--accent-ink)}
+h2{font-family:var(--display);font-weight:800;font-size:1.4rem;margin:0;line-height:1.2;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:0}
+p{margin:0}
+.muted{color:var(--muted)} .small{font-size:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.meta{display:flex;justify-content:space-between;gap:12px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:800;flex-wrap:wrap}
+.big{font-family:var(--display);font-weight:800;font-size:2.3rem;line-height:1;font-variant-numeric:tabular-nums}
+.meter{height:10px;background:var(--accent-soft);border-radius:99px;overflow:hidden;flex:1;min-width:140px}
+.meter i{display:block;height:100%;background:var(--accent);border-radius:99px;transition:width .4s}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font:800 16px var(--body);padding:11px 18px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.sm{padding:6px 12px;font-size:14px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible,input:focus-visible{outline:3px solid var(--mari);outline-offset:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:10px}
+.tile{text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:14px;cursor:pointer;color:var(--ink);font:inherit;display:flex;flex-direction:column;gap:4px;min-width:0}
+.tile:hover{border-color:var(--accent)}
+.tile .name{font-family:var(--display);font-weight:600;font-size:1.15rem;line-height:1.2}
+.tag{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.mini{height:6px;background:var(--accent-soft);border-radius:99px;overflow:hidden}
+.mini i{display:block;height:100%;background:var(--accent)}
+.keybox{border-left:4px solid var(--accent);background:var(--accent-soft);padding:10px 14px;border-radius:0 12px 12px 0;font-weight:600}
+.warn{border-left:4px solid var(--mari);background:var(--mari-soft);padding:10px 14px;border-radius:0 12px 12px 0}
+.eg{background:var(--bg);border-radius:12px;padding:10px 14px}
+.eg ul{margin:4px 0 0;padding-left:20px}
+.ptab{border-collapse:collapse;width:100%;font-size:16px}
+.ptab td,.ptab th{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left}
+.ptab th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.ptab td b{color:var(--accent)}
+.scroll{overflow-x:auto}
+.prompt{font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,4.6vw,1.6rem);line-height:1.3;margin:0;text-wrap:pretty}
+.hint{color:var(--muted);margin-top:-6px}
+.choices{display:grid;gap:8px}
+.choice{text-align:left;font:400 17px var(--body);padding:12px 16px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.choice:hover:not(:disabled){border-color:var(--accent)}
+.choice.right{border-color:var(--ok);background:var(--ok-soft)}
+.choice.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.typed{display:flex;gap:8px;flex-wrap:wrap}
+.typed input{font:400 18px var(--body);padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);flex:1;min-width:0}
+.accents{display:flex;gap:6px;flex-wrap:wrap}
+.accents button{font:600 16px var(--body);width:40px;height:38px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.fb{border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:6px}
+.fb.ok{background:var(--ok-soft)} .fb.bad{background:var(--bad-soft)} .fb.info{background:var(--accent-soft)}
+.fb strong{font-family:var(--display);font-weight:800;font-size:1.2rem}
+.fb.ok strong{color:var(--ok)} .fb.bad strong{color:var(--bad)}
+.pop{animation:pop .3s ease}
+@keyframes pop{0%{transform:scale(.98)}60%{transform:scale(1.01)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}.meter i{transition:none}}
+.score{font-family:var(--display);font-weight:800;font-size:3rem;margin:0;line-height:1;font-variant-numeric:tabular-nums}
+ul.list{margin:0;padding-left:20px;display:grid;gap:6px}
+.tree svg{width:100%;height:auto;display:block}
+.tree .node{cursor:pointer}
+.tree .node rect{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+.tree .node.sel rect{fill:var(--accent-soft);stroke-width:3}
+.tree .node.me rect{fill:var(--mari-soft);stroke:var(--mari)}
+.tree text{fill:var(--ink);font-family:var(--body)}
+.tree line,.tree path{stroke:var(--muted);stroke-width:2;fill:none}
+.match{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.match .col{display:grid;gap:8px;align-content:start;min-width:0}
+.mt{font:600 16px var(--body);padding:11px;border-radius:12px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer}
+.mt.sel{border-color:var(--accent);background:var(--accent-soft)}
+.mt.done{border-color:var(--ok);background:var(--ok-soft);opacity:.5;cursor:default}
+.mt.miss{border-color:var(--bad);background:var(--bad-soft)}
+.reading{background:var(--mari-soft);border-radius:12px;padding:12px 16px;font-style:italic}
+.wtable{width:100%;border-collapse:collapse;font-size:15px}
+.wtable td,.wtable th{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.wtable td.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+.confirm{background:var(--bad-soft);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+</style>
+
+</head><body>
+<div class="app">
+  <header class="top">
+    <h1 class="brand" id="brand">Mi Familia y Hay<small>Español 8 · Quizzes: Possession, Family Tree &amp; Hay · Arte (Cap. 2)</small></h1>
+    <div class="stats" id="stats"></div>
+  </header>
+  <nav class="nav" aria-label="Sections">
+    <a id="nav-central" href="index.html#subject-2" style="font:800 15px var(--body);padding:8px 15px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none">← Study Central</a>
+    <button id="nav-home">🏠 Home</button>
+    <button id="nav-learn">Aprende</button>
+    <button id="nav-prac">Practica</button>
+    <button id="nav-test">Examen</button>
+    <button id="nav-arte">🎨 Arte</button>
+    <button id="nav-prog">Progreso</button>
+  </nav>
+  <main id="view"></main>
+</div>
+
+<script>
+/* ================= HELPERS ================= */
+const R=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const norm=s=>String(s).toLowerCase().replace(/[¿?¡!.,;:"“”]/g," ").replace(/\s+/g," ").trim();
+const noAcc=s=>s.normalize("NFD").replace(/[̀-ͯ]/g,"");
+const view=document.getElementById("view");
+const NUMW={2:"dos",3:"tres",4:"cuatro",5:"cinco"};
+
+/* ================= VOCAB ================= */
+// [singular, plural, gender, english, english plural]
+const THINGS=[["libro","libros","m","book","books"],["mochila","mochilas","f","backpack","backpacks"],["lápiz","lápices","m","pencil","pencils"],["mesa","mesas","f","table","tables"],
+ ["computadora","computadoras","f","computer","computers"],["perro","perros","m","dog","dogs"],["gato","gatos","m","cat","cats"],["casa","casas","f","house","houses"],["silla","sillas","f","chair","chairs"],
+ ["cama","camas","f","bed","beds"],["espejo","espejos","m","mirror","mirrors"],["lámpara","lámparas","f","lamp","lamps"],["reloj","relojes","m","clock","clocks"],["camisa","camisas","f","shirt","shirts"],
+ ["ventana","ventanas","f","window","windows"],["ropero","roperos","m","closet","closets"],["merienda","meriendas","f","snack","snacks"],["bicicleta","bicicletas","f","bicycle","bicycles"],
+ ["carro","carros","m","car","cars"],["cuaderno","cuadernos","m","notebook","notebooks"],["pluma","plumas","f","pen","pens"],["árbol","árboles","m","tree","trees"]];
+const FAM=[["hermano","hermanos","m","brother","brothers"],["hermana","hermanas","f","sister","sisters"],["primo","primos","m","cousin (male)","cousins"],["prima","primas","f","cousin (female)","cousins (female)"],
+ ["tío","tíos","m","uncle","uncles"],["tía","tías","f","aunt","aunts"],["abuelo","abuelos","m","grandfather","grandparents"],["abuela","abuelas","f","grandmother","grandmothers"],
+ ["padre","padres","m","father","parents"],["madre","madres","f","mother","mothers"],["hijo","hijos","m","son","children / sons"],["hija","hijas","f","daughter","daughters"],
+ ["amigo","amigos","m","friend","friends"],["maestro","maestros","m","teacher (male)","teachers"],["maestra","maestras","f","teacher (female)","teachers (female)"]];
+const HAYN=THINGS.filter(t=>["cama","espejo","ropero","lámpara","perro","camisa","merienda","reloj","ventana","libro","silla","mesa","gato","computadora","mochila"].includes(t[0]));
+const art=(g,pl,def)=>def?(g==="m"?(pl?"los":"el"):(pl?"las":"la")):(g==="m"?(pl?"unos":"un"):(pl?"unas":"una"));
+
+/* ================= POSSESSIVES ================= */
+// owner: [english label, code]
+const OWN=[["my","mi"],["your (fam.)","tu"],["his","su"],["her","su"],["your (formal)","su"],["our","nuestro"],["their","su"],["your (pl.)","su"]];
+function possForm(code,g,pl){if(code==="nuestro")return (g==="m"?"nuestro":"nuestra")+(pl?"s":"");if(code==="vuestro")return (g==="m"?"vuestro":"vuestra")+(pl?"s":"");return code+(pl?"s":"")}
+const POSS_ALL=["mi","mis","tu","tus","su","sus","nuestro","nuestra","nuestros","nuestras"];
+function possWhy(code,g,pl,noun){
+ if(code==="nuestro")return `“Our” = nuestro, and it matches the noun: <b>${noun}</b> is ${g==="m"?"masculine":"feminine"} ${pl?"plural":"singular"} → <b>${possForm(code,g,pl)}</b>.`;
+ const w={mi:"my",tu:"your (familiar)",su:"his / her / your (formal) / their / your (pl.)"}[code];
+ return `${cap(code)} = ${w}. <b>${noun}</b> is ${pl?"plural, so add -s":"singular"} → <b>${possForm(code,g,pl)}</b>. (Only number matters for mi, tu, su.)`;
+}
+
+/* ================= QUESTION GENERATORS ================= */
+const GEN={
+ // A1-style: translate "my books"
+ poss(){const [en,code]=R(OWN),pool=Math.random()<.55?THINGS:FAM.filter(f=>!["madre","madres"].includes(f[0])),n=R(pool),pl=Math.random()<.5;
+  const noun=pl?n[1]:n[0],ans=possForm(code,n[2],pl)+" "+noun,acc=[ans];
+  if(en==="your (pl.)")acc.push(possForm("vuestro",n[2],pl)+" "+noun);
+  return {sk:"poss",type:"type",prompt:`${en} ${pl?n[4]:n[3]}`,hint:"Write it in Spanish.",answer:acc,show:ans,why:possWhy(code,n[2],pl,noun)}},
+ // A3-style: context sentence
+ _ctx(pool){
+  const subs=[["Yo tengo","mi"],["Tú tienes","tu"],["Carlos tiene","su"],["La chica tiene","su"],["Ella tiene","su"],["Él tiene","su"],["Nosotros tenemos","nuestro"],["Tenemos","nuestro"],["Ellas tienen","su"],["Mis padres tienen","su"],["Ustedes tienen","su"],["Carlos y Ana tienen","su"],["La maestra tiene","su"]];
+  const [s,code]=R(subs),n=R(pool),pl=Math.random()<.5,cnt=pl?NUMW[R([2,3,4])]:art(n[2],0,0);const noun=pl?n[1]:n[0];
+  const ansW=possForm(code,n[2],pl);return {s,code,n,pl,cnt,noun,ansW}},
+ choose(){const c=GEN._ctx(THINGS),sent=`${c.s} ${c.cnt} ${c.noun}. ${c.pl?"Son":"Es"} ___ ${c.noun}.`;
+  const opts=new Set([c.ansW]);const alt=c.code==="nuestro"?[possForm("nuestro",c.n[2],!c.pl),possForm("nuestro",c.n[2]==="m"?"f":"m",c.pl)]:[possForm(c.code,c.n[2],!c.pl)];
+  alt.forEach(a=>opts.add(a));shuffle(POSS_ALL.filter(x=>(x.endsWith("s")===c.pl)||x.startsWith("nuestr"))).forEach(x=>{if(opts.size<4)opts.add(x)});
+  return {sk:"choose",type:"mc",prompt:sent,hint:"Who owns it? One thing or more than one?",choices:shuffle([...opts]),answer:[c.ansW],show:c.ansW,why:possWhy(c.code,c.n[2],c.pl,c.noun)}},
+ // Section B: family context, typed
+ family(){
+  if(Math.random()<.4){ // "(her) hijos" style
+   const [en,code]=R(OWN.filter(o=>o[0]!=="your (pl.)"&&o[0]!=="your (formal)")),f=R(FAM),pl=Math.random()<.5,noun=pl?f[1]:f[0];
+   const ans=possForm(code,f[2],pl);
+   return {sk:"family",type:"type",prompt:`(${en}) ${noun}`,hint:"Write the possessive + the family word.",answer:[ans+" "+noun],show:ans+" "+noun,why:possWhy(code,f[2],pl,noun)}}
+  const c=GEN._ctx(FAM.filter(f=>!["padre","madre","padres","madres","maestro","maestra"].includes(f[0])));
+  const sent=`${c.s} ${c.cnt} ${c.noun}. ___ ${c.noun} ${c.pl?"son":"es"} ${R(["simpátic","alt","inteligent"]).replace(/^(simpátic|alt)$/,m=>m+(c.n[2]==="m"?(c.pl?"os":"o"):(c.pl?"as":"a"))).replace(/^inteligent$/,"inteligente"+(c.pl?"s":""))}.`;
+  return {sk:"family",type:"type",prompt:sent,hint:"Write the missing possessive.",answer:[c.ansW],show:cap(c.ansW),why:possWhy(c.code,c.n[2],c.pl,c.noun)}},
+ // A2: de + persona
+ de(){const owners=[["Juan"],["Isabel"],["Ana"],["Carlos"],["María"],["el maestro","the teacher (male)"],["la maestra","the teacher (female)"],["los abuelos","the grandparents"],["las chicas","the girls"],["el chico","the boy"],["mi hermano","my brother"]];
+  const [o,oen]=R(owners),n=R(THINGS.concat(FAM.slice(0,8))),pl=Math.random()<.3;const noun=pl?n[1]:n[0];
+  const deP=o.startsWith("el ")?"del "+o.slice(3):"de "+o;const ans=`${art(n[2],pl,1)} ${noun} ${deP}`;
+  const enO=oen||o, enN=pl?n[4]:n[3];
+  const plain=(oen||o).replace(/ \(.*\)/,""),tag=oen&&/\(/.test(oen)?oen.match(/\((.*)\)/)[1]+" · ":"";
+  const prompt=Math.random()<.5?`the ${enN} of ${plain}`:`${cap(plain)}’s ${enN}`;
+  return {sk:"de",type:"type",prompt,hint:`${tag}Use noun + de + person (de + el = del).`,answer:[ans],show:ans,why:o.startsWith("el ")?`de + el always becomes <b>del</b>: ${ans}.`:`Formula: article + noun + de + person → ${ans}.`}},
+ // A4: correct the error
+ fix(){
+  const kinds=[
+   ()=>{const f=R(FAM.filter(x=>x[2]&&!["padre","madre"].includes(x[0]))),code=R(["mi","tu","su"]);const right=`${cap(code)} ${f[0]} es simpátic${f[2]==="m"?"o":"a"}.`;return [`${cap(code)}s ${f[0]} es simpátic${f[2]==="m"?"o":"a"}.`,right,`${f[0]} is singular, so use ${code} (no -s).`]},
+   ()=>{const t=R(THINGS),code=R(["mi","tu","su"]);const right=`${cap(code)}s ${t[1]} están en la mesa.`;return [`${cap(code)} ${t[1]} están en la mesa.`,right,`${t[1]} is plural, so the possessive needs -s: ${code}s.`]},
+   ()=>{const t=R(THINGS.filter(x=>x[2]==="f"&&!["mesa"].includes(x[0]))),nm=R(["Ana","Carlos","Juan"]);return [`El ${t[0]} de ${nm} es grande.`,`La ${t[0]} de ${nm} es grande.`,`${t[0]} is feminine, so it's la ${t[0]}.`]},
+   ()=>{const f=R(FAM.filter(x=>!["padre","madre","maestro","maestra","amigo"].includes(x[0])));const o=f[2]==="m"?"nuestro":"nuestra";return [`${cap(o)} ${f[0]} son simpátic${f[2]==="m"?"o":"a"}.`,`${cap(o)} ${f[0]} es simpátic${f[2]==="m"?"o":"a"}.`,`One person → es, not son.`]},
+   ()=>{const f=R(FAM.filter(x=>["hermano","primo","tío","abuelo","hijo"].includes(x[0])));return [`Nuestra ${f[0]} es alto.`,`Nuestro ${f[0]} es alto.`,`${f[0]} is masculine, so “our” is nuestro.`]}];
+  const [wrong,right,why]=R(kinds)();
+  return {sk:"fix",type:"type",prompt:wrong,hint:"Find the mistake. Write the whole corrected sentence.",answer:[right],show:right,why}},
+ // C1: hay
+ hay(){const n=R(HAYN),mode=R(["a","a","some","num","bare"]);let en,ans,acc;
+  if(mode==="a"){en=`There is ${/^[aeiou]/.test(n[3])?"an":"a"} ${n[3]}.`;ans=`Hay ${art(n[2],0,0)} ${n[0]}.`;acc=[ans]}
+  else if(mode==="some"){en=`There are some ${n[4]}.`;ans=`Hay ${art(n[2],1,0)} ${n[1]}.`;acc=[ans,`Hay ${n[1]}.`]}
+  else if(mode==="num"){const k=R([2,3,4,5]);en=`There are ${["","","two","three","four","five"][k]} ${n[4]}.`;ans=`Hay ${NUMW[k]} ${n[1]}.`;acc=[ans,`Hay ${k} ${n[1]}.`]}
+  else{en=`There are ${n[4]}.`;ans=`Hay ${n[1]}.`;acc=[ans,`Hay ${art(n[2],1,0)} ${n[1]}.`]}
+  return {sk:"hay",type:"type",prompt:en,hint:"Write it in Spanish with Hay.",answer:acc,show:ans,why:mode==="a"?`There is → Hay + ${art(n[2],0,0)} (${n[0]} is ${n[2]==="m"?"masculine":"feminine"}).`:`There are → Hay + plural. No verb after hay!`}},
+ // C2: choose the correct sentence
+ haych(){const n=R(HAYN),pl=Math.random()<.5;const right=pl?`Hay ${art(n[2],1,0)} ${n[1]}.`:`Hay ${art(n[2],0,0)} ${n[0]}.`;
+  const wrongs=pl?[`Hay ${art(n[2]==="m"?"f":"m",1,0)} ${n[1]}.`,`Hay son ${n[1]}.`,`Hay ${art(n[2],0,0)} ${n[1]}.`]:[`Hay ${art(n[2]==="m"?"f":"m",0,0)} ${n[0]}.`,`Hay es ${art(n[2],0,0)} ${n[0]}.`,`Hay ${art(n[2],1,0)} ${n[0]}.`];
+  return {sk:"haych",type:"mc",prompt:"Which sentence is correct?",hint:"Check the article and the number. Nothing goes between hay and the noun phrase.",choices:shuffle([right,...wrongs]),answer:[right],show:right,why:`${pl?n[1]:n[0]} is ${n[2]==="m"?"masculine":"feminine"} ${pl?"plural":"singular"} → ${right}`}}
+};
+
+/* ================= READING + FAMILY TREE ================= */
+const READING="Tengo dos hermanos. Mi hermana se llama Clara y mi hermano se llama Tomás. Mis padres se llaman Rosa y Ernesto. El hermano de mi madre se llama Julián y él tiene una hija. Su hija se llama Marta. Marta es mi prima.";
+const PEOPLE={yo:["Yo","el narrador","¡Soy yo! I'm the one telling the story."],clara:["Clara","mi hermana","Clara es mi hermana. Sus padres son Rosa y Ernesto."],tomas:["Tomás","mi hermano","Tomás es mi hermano."],
+ rosa:["Rosa","mi madre","Rosa es mi madre. Su hermano es Julián."],ernesto:["Ernesto","mi padre","Ernesto es mi padre. Sus hijos son Clara, Tomás y yo."],
+ julian:["Julián","mi tío","Julián es mi tío: el hermano de mi madre. Su hija es Marta."],marta:["Marta","mi prima","Marta es mi prima. Su padre es Julián."],abuelos:["Los abuelos","mis abuelos","Son los padres de Rosa y Julián: mis abuelos."]};
+const READQ=[["¿Cómo se llama la hermana?","Clara",["Rosa","Marta","Tomás"]],["¿Cómo se llaman los padres?","Rosa y Ernesto",["Clara y Tomás","Julián y Marta","Rosa y Julián"]],
+ ["¿Quién es Julián?","El hermano de la madre (el tío)",["El padre","El hermano del narrador","El primo"]],["¿Marta es prima o hermana?","Prima",["Hermana","Tía","Madre"]],
+ ["¿Quién es el hermano de la madre?","Julián",["Ernesto","Tomás","Marta"]],["¿Cómo se llama el hermano del narrador?","Tomás",["Julián","Ernesto","Clara"]],
+ ["Julián tiene una hija. ___ hija se llama Marta.","Su",["Sus","Mi","Nuestra"]],["Para el narrador, ¿quién es Rosa?","Su madre",["Su tía","Su hermana","Su prima"]]]
+ .map(([q,a,d])=>({sk:"read",type:"mc",prompt:q,hint:"Use the reading and the family tree.",choices:shuffle([a,...d]),answer:[a],show:a,reading:true}));
+function treeSVG(sel){
+ const node=(id,x,y,w)=>{const p=PEOPLE[id];w=w||76;return `<g class="node ${sel===id?"sel":""} ${id==="yo"?"me":""}" data-p="${id}" tabindex="0" role="button" aria-label="${p[0]}"><rect x="${x-w/2}" y="${y-19}" width="${w}" height="38" rx="10"/><text x="${x}" y="${y-1}" text-anchor="middle" font-size="14" font-weight="800">${p[0]}</text><text x="${x}" y="${y+13}" text-anchor="middle" font-size="10.5" opacity=".75">${p[1]}</text></g>`};
+ return `<svg viewBox="0 0 360 250" role="img" aria-label="Family tree from the reading">
+  <path d="M215 50 V70 H150 V91 M215 70 H290 V91"/>
+  <line x1="98" y1="110" x2="112" y2="110"/>
+  <path d="M105 110 V160 M34 160 H178 M34 160 V181 M106 160 V181 M178 160 V181"/>
+  <path d="M290 129 V181"/>
+  ${node("abuelos",215,31,100)}${node("ernesto",60,110)}${node("rosa",150,110)}${node("julian",290,110)}
+  ${node("yo",34,200,62)}${node("clara",106,200,62)}${node("tomas",178,200,62)}${node("marta",290,200)}</svg>`;
+}
+
+/* ================= STUDY GUIDE EXERCISES (exact, with her answer key) ================= */
+const T=(sec,prompt,ans,hint,extra)=>Object.assign({sk:"guide",type:"type",prompt,answer:Array.isArray(ans)?ans:[ans],show:Array.isArray(ans)?ans[0]:ans,hint,sec},extra||{});
+const GUIDE=[
+ ...[["my books","mis libros"],["your (fam.) backpack","tu mochila"],["his pencils","sus lápices"],["our table","nuestra mesa"],["their cousins","sus primos"],["her computer","su computadora"],["your (pl.) teachers",["sus maestros","sus profesores","vuestros maestros","vuestros profesores"]],["our dog","nuestro perro"],["my friends",["mis amigos","mis amigas"]],["their house","su casa"]]
+   .map(([p,a])=>T("A1 · Translate (possessive adjectives)",p,a,"Write it in Spanish.")),
+ ...[["the sister of Juan","la hermana de Juan"],["the dog of Isabel","el perro de Isabel"],["the pen of the teacher",["la pluma del maestro","la pluma del profesor","la pluma de la maestra","la pluma de la profesora","el bolígrafo del maestro","el bolígrafo del profesor"]],["the computer of the girls","la computadora de las chicas"],["the house of the grandparents","la casa de los abuelos"]]
+   .map(([p,a])=>T("A2 · Rewrite using de + persona",p,a,"noun + de + person (de + el = del)")),
+ ...[["Yo tengo una bicicleta. Es ___ bicicleta.","mi"],["Nosotros tenemos tarea. Es ___ tarea.","nuestra"],["Ellas tienen una maestra. Es ___ maestra.","su"],["Tú tienes tres perros. Son ___ perros.","tus"],["Carlos tiene un primo. Es ___ primo.","su"],["Mis padres tienen un carro. Es ___ carro.","su"],["Ustedes tienen mochilas. Son ___ mochilas.","sus"],["La chica tiene un hermano. Es ___ hermano.","su"]]
+   .map(([p,a])=>T("A3 · Choose the correct possessive",p,a,"Write mi, mis, tu, tus, su, sus, or nuestro/a/os/as.")),
+ ...[["Mis hermano se llama Pablo.","Mi hermano se llama Pablo."],["Nuestra abuela son simpática.","Nuestra abuela es simpática."],["Tu libros están en la mesa.","Tus libros están en la mesa."],["Ella tiene sus primo en México.",["Ella tiene su primo en México.","Ella tiene sus primos en México."]],["El casa de Ana es grande.","La casa de Ana es grande."]]
+   .map(([p,a])=>T("A4 · Correct the errors",p,a,"Write the whole corrected sentence.")),
+ ...[["Elena tiene dos hermanas. ___ hermanas son altas.","sus"],["Mi padre tiene un hermano. ___ hermano vive en Texas.","su"],["Tenemos cuatro primos. ___ primos son menores.","nuestros"],["Yo tengo dos tías. ___ tías son simpáticas.","mis"],["Carlos y Ana tienen un bebé. ___ bebé se llama Leo.","su"],["La maestra tiene un hijo. ___ hijo es estudiante.","su"],["Mis padres tienen un gato. ___ gato es negro.","su"],["Tú tienes una abuela. ___ abuela cocina muy bien.","tu"]]
+   .map(([p,a])=>T("B1 · Fill in the possessive",p,a,"Use mi/mis, su/sus, nuestro/a/os/as, tu/tus.")),
+ ...[["the aunt of María → ___ tía","su"],["the grandparents of the boys → ___ abuelos","sus"],["the parents of Ana → ___ padres","sus"],["the daughter of Carlos → ___ hija","su"],["the cousins of the girls → ___ primas","sus"]]
+   .map(([p,a])=>T("B2 · Rewrite using su / sus",p,a,"su or sus?")),
+ ...READQ.slice(0,5).map(q=>Object.assign({},q,{sk:"guide",sec:"B3 · Short reading"})),
+ ...[["(a lamp)","Hay una lámpara."],["(two windows)",["Hay dos ventanas.","Hay 2 ventanas."]],["(a mirror)","Hay un espejo."],["(some books)",["Hay unos libros.","Hay libros."]],["(a clock)","Hay un reloj."],["(three shirts)",["Hay tres camisas.","Hay 3 camisas."]],["(a dog)","Hay un perro."],["(snacks)",["Hay unas meriendas.","Hay meriendas.","Hay una merienda."]]]
+   .map(([p,a])=>T("C1 · Write sentences with Hay",p,a,"Hay + un/una/unos/unas + noun")),
+ {sk:"guide",type:"mc",sec:"C2 · Choose the correct sentence",prompt:"Choose the correct sentence.",choices:["Hay un cama.","Hay una cama."],answer:["Hay una cama."],show:"Hay una cama.",why:"cama is feminine → una."},
+ {sk:"guide",type:"mc",sec:"C2 · Choose the correct sentence",prompt:"Choose the correct sentence.",choices:["Hay lámparas.","Hay unas lámparas."],answer:["Hay lámparas.","Hay unas lámparas."],show:"Hay unas lámparas.",why:"Heads up: both are correct Spanish. Her answer key picks “Hay unas lámparas,” so circle that one on the quiz."},
+ {sk:"guide",type:"mc",sec:"C2 · Choose the correct sentence",prompt:"Choose the correct sentence.",choices:["Hay un reloj en la pared.","Hay una relojes."],answer:["Hay un reloj en la pared."],show:"Hay un reloj en la pared.",why:"“una relojes” mixes singular and plural, and reloj is masculine."},
+ {sk:"guide",type:"mc",sec:"C2 · Choose the correct sentence",prompt:"Choose the correct sentence.",choices:["Hay un perro en la cama.","Hay un perro."],answer:["Hay un perro en la cama.","Hay un perro."],show:"Hay un perro.",why:"Heads up: both are correct Spanish. Her answer key picks “Hay un perro,” so circle that one on the quiz."}];
+
+/* ================= ARTE (Chapter 2) ================= */
+const ARTV={
+ "Formas de arte":[["la cerámica","ceramics / pottery"],["la pintura","painting (also: paint)"],["las pinturas","paintings / paints"],["el arte textil","textile art (weaving, fabrics)"],["la estatua","statue"],["la escultura","sculpture"],["el mural","mural"],["el retrato","portrait"],["el paisaje","landscape"]],
+ "Herramientas para pintar":[["el pincel","paintbrush"],["las pinturas","paints"],["el lienzo","canvas"],["el caballete","easel"],["la paleta","palette"],["la acuarela","watercolor"],["el óleo","oil paint"],["el lápiz","pencil"]],
+ "Materiales de otras formas de arte":[["la arcilla / el barro","clay (for cerámica)"],["el horno","kiln / oven (bakes cerámica)"],["el hilo","thread / yarn (for arte textil)"],["la tela","fabric / cloth"],["el telar","loom"],["la piedra","stone (for estatuas)"],["el mármol","marble"],["el bronce","bronze"],["el cincel","chisel"]],
+ "Personas":[["el pintor / la pintora","painter"],["el escultor / la escultora","sculptor"],["el / la artista","artist"]]};
+const STY={
+ realista:{en:"realistic",d:["Muestra las cosas como son en la vida real.","Parece una foto.","Las personas y los objetos se ven muy reales, con muchos detalles.","El artista pinta exactamente lo que ve."],trick:"Realista = REAL. Looks like a photo."},
+ abstracto:{en:"abstract",d:["Usa formas, líneas y colores, pero no muestra cosas reales.","No hay personas ni objetos que puedas reconocer.","Tiene círculos, cuadrados y líneas de muchos colores.","Expresa ideas y sentimientos con formas y colores. Wassily Kandinsky pintó en este estilo."],trick:"Abstracto = only shapes and colors, nothing real."},
+ impresionista:{en:"impressionist",d:["Usa pinceladas rápidas que se pueden ver.","Muestra la luz y los colores de un momento.","De cerca, los objetos se ven un poco borrosos.","Claude Monet pintó en este estilo."],trick:"Impresionista = an IMPRESSION of a moment: quick dabs of paint and light."}};
+// fill-in-the-blank: [sentence with ___, accepted answers, english]
+const AFILL=[
+ ["La ___ es el arte de hacer platos y jarrones de barro.",["cerámica","la cerámica"],"Ceramics is the art of making plates and vases from clay."],
+ ["Para hacer cerámica, el artista usa ___.",["arcilla","barro","la arcilla","el barro"],"To make ceramics, the artist uses clay."],
+ ["Después, la cerámica se cocina en un ___.",["horno","el horno"],"Then the pottery is baked in a kiln."],
+ ["Una ___ es una figura de una persona o un animal, hecha de piedra o de bronce.",["estatua","escultura","la estatua"],"A statue is a figure of a person or animal made of stone or bronze."],
+ ["El escultor usa un ___ para cortar la piedra.",["cincel","el cincel"],"The sculptor uses a chisel to cut the stone."],
+ ["La estatua es de ___, una piedra blanca.",["mármol","el mármol"],"The statue is made of marble, a white stone."],
+ ["Las alfombras y la ropa tejida son ejemplos de arte ___.",["textil"],"Rugs and woven clothes are examples of textile art."],
+ ["Para hacer arte textil, el artista usa ___ y tela.",["hilo","el hilo","lana"],"To make textile art, the artist uses thread and fabric."],
+ ["El artista teje la tela en un ___.",["telar","el telar"],"The artist weaves the fabric on a loom."],
+ ["En el museo hay muchas ___ en las paredes.",["pinturas"],"In the museum there are many paintings on the walls."],
+ ["El pintor pinta con un ___.",["pincel","el pincel"],"The painter paints with a paintbrush."],
+ ["El pintor pinta sobre un ___.",["lienzo","el lienzo"],"The painter paints on a canvas."],
+ ["El pintor pone el lienzo en el ___.",["caballete","el caballete"],"The painter puts the canvas on the easel."],
+ ["El pintor mezcla los colores en la ___.",["paleta","la paleta"],"The painter mixes the colors on the palette."],
+ ["Para colorear el cuadro, el artista usa ___.",["pinturas","las pinturas","acuarelas","óleos"],"To color the picture, the artist uses paints."],
+ ["La ___ es una pintura con agua y colores muy claros.",["acuarela","la acuarela"],"Watercolor is paint made with water and light colors."],
+ ["Un ___ es una pintura de una persona.",["retrato","el retrato"],"A portrait is a painting of a person."],
+ ["Un ___ es una pintura de la naturaleza: montañas, árboles y ríos.",["paisaje","el paisaje"],"A landscape is a painting of nature."],
+ ["Un ___ es una pintura muy grande en una pared.",["mural","el mural"],"A mural is a very large painting on a wall."],
+ ["El arte ___ muestra las cosas como son en la vida real.",["realista"],"Realistic art shows things as they are in real life."],
+ ["El arte ___ usa formas, líneas y colores, pero no muestra cosas reales.",["abstracto"],"Abstract art uses shapes, lines and colors but doesn't show real things."],
+ ["Claude Monet es un pintor ___: pinta la luz con pinceladas rápidas.",["impresionista"],"Claude Monet is an impressionist painter."],
+ ["Una persona que pinta es un ___ o una pintora.",["pintor"],"A person who paints is a painter."],
+ ["Una persona que hace estatuas es un ___ o una escultora.",["escultor"],"A person who makes statues is a sculptor."]];
+const ABANK=["cerámica","arcilla","horno","estatua","cincel","mármol","textil","hilo","telar","pinturas","pincel","lienzo","caballete","paleta","acuarela","retrato","paisaje","mural","realista","abstracto","impresionista","pintor","escultor"];
+const ATOOLS=[
+ ["¿Qué usa el pintor para poner la pintura en el lienzo?","el pincel",["el telar","el cincel","el horno"],"the paintbrush"],
+ ["¿Dónde mezcla el pintor los colores?","en la paleta",["en el horno","en el telar","en el mármol"],"on the palette"],
+ ["¿Qué sostiene (holds) el lienzo mientras el pintor pinta?","el caballete",["la paleta","el hilo","la arcilla"],"the easel"],
+ ["¿Sobre qué pinta el pintor?","sobre el lienzo",["sobre el barro","sobre el bronce","sobre el horno"],"on the canvas"],
+ ["¿Qué usa el pintor para dar color?","las pinturas",["la piedra","el telar","el cincel"],"paints"],
+ ["¿Cuál es una herramienta para pintar?","el pincel",["el telar","el cincel","el horno"],"the paintbrush"],
+ ["¿Cuál NO es una herramienta para pintar?","el telar",["el pincel","la paleta","el caballete"],"the loom (that's for textile art)"],
+ ["¿Qué usa el artista para hacer cerámica?","la arcilla (el barro)",["el hilo","el lienzo","la acuarela"],"clay"],
+ ["¿Qué usa el artista para hacer arte textil?","el hilo y la tela",["la piedra y el cincel","el pincel y el lienzo","el barro y el horno"],"thread and fabric"],
+ ["¿Qué usa el escultor para hacer una estatua?","la piedra y el cincel",["el hilo y el telar","la paleta y el pincel","la acuarela y el papel"],"stone and a chisel"],
+ ["Un jarrón de barro es un ejemplo de…","la cerámica",["el arte textil","la estatua","la pintura"],"ceramics"],
+ ["Una alfombra tejida a mano es un ejemplo de…","el arte textil",["la cerámica","la estatua","la pintura"],"textile art"],
+ ["Una figura de bronce de un héroe es…","una estatua",["una pintura","una cerámica","un arte textil"],"a statue"],
+ ["Un cuadro de flores en un lienzo es…","una pintura",["una estatua","una cerámica","un arte textil"],"a painting"]]
+ .map(([q,a,d,en])=>({sk:"arte_tools",type:"mc",prompt:q,choices:shuffle([a,...d]),answer:[a],show:a,why:`Answer: ${a} (${en}).`}));
+
+/* --- paintings drawn on canvas: realista / impresionista / abstracto --- */
+function drawArt(cv,style,seed){
+ const W=320,H=220,dpr=window.devicePixelRatio||1;cv.width=W*dpr;cv.height=H*dpr;const c=cv.getContext("2d");c.scale(dpr,dpr);
+ let s=seed||Math.floor(Math.random()*1e9);const rnd=()=>{s=(s*1664525+1013904223)%4294967296;return s/4294967296};
+ const hor=125+rnd()*20,sunX=40+rnd()*240,houseX=40+rnd()*140,treeX=houseX+120+rnd()*30;
+ const skyTop=["#5b9bd5","#7fb2e5","#f2a65a"][Math.floor(rnd()*3)],skyBot=skyTop==="#f2a65a"?"#fbe2b0":"#d6ecfa",houseCol=["#b5503c","#c9a227","#6c8fb3"][Math.floor(rnd()*3)];
+ if(style==="abstracto"){
+  c.fillStyle=["#f4efe4","#1c1c28","#fff"][Math.floor(rnd()*3)];c.fillRect(0,0,W,H);const pal=["#e63946","#f1c40f","#1d4ed8","#111","#2a9d8f","#f77f00","#8e44ad"];
+  if(rnd()<.5){ // grid blocks
+   const xs=[0,60+rnd()*60,170+rnd()*60,W],ys=[0,50+rnd()*50,130+rnd()*40,H];
+   for(let i=0;i<3;i++)for(let j=0;j<3;j++){c.fillStyle=rnd()<.45?pal[Math.floor(rnd()*pal.length)]:"#f4efe4";c.fillRect(xs[i],ys[j],xs[i+1]-xs[i],ys[j+1]-ys[j])}
+   c.strokeStyle="#111";c.lineWidth=7;xs.slice(1,3).forEach(x=>{c.beginPath();c.moveTo(x,0);c.lineTo(x,H);c.stroke()});ys.slice(1,3).forEach(y=>{c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()});
+  }else{ // circles, triangles, lines
+   for(let i=0;i<7;i++){c.fillStyle=pal[Math.floor(rnd()*pal.length)];c.globalAlpha=.85;c.beginPath();c.arc(rnd()*W,rnd()*H,10+rnd()*45,0,7);c.fill()}
+   for(let i=0;i<3;i++){c.fillStyle=pal[Math.floor(rnd()*pal.length)];c.beginPath();c.moveTo(rnd()*W,rnd()*H);c.lineTo(rnd()*W,rnd()*H);c.lineTo(rnd()*W,rnd()*H);c.fill()}
+   c.globalAlpha=1;c.strokeStyle="#111";for(let i=0;i<6;i++){c.lineWidth=1+rnd()*4;c.beginPath();c.moveTo(rnd()*W,rnd()*H);c.lineTo(rnd()*W,rnd()*H);c.stroke()}
+  }return}
+ // scene regions (shared by realista and impresionista)
+ const region=(x,y)=>{
+  if(x>treeX-4&&x<treeX+4&&y>hor-30&&y<hor+30)return "#6b4423";
+  if(Math.hypot(x-treeX,y-(hor-45))<30)return "#2f6b2f";
+  if(x>houseX&&x<houseX+70&&y>hor-40&&y<hor+10)return (x>houseX+25&&x<houseX+45&&y>hor-15)?"#4a3020":houseCol;
+  if(y<hor-40&&y>hor-70&&Math.abs(x-(houseX+35))<(y-(hor-75))*1.2)return "#7a2e22";
+  if(y<hor){if(Math.hypot(x-sunX,y-40)<18)return "#ffd23f";return y<hor*.5?skyTop:skyBot}
+  return y<hor+40?"#6aa84f":"#4f8a3a"};
+ if(style==="impresionista"){
+  c.fillStyle=skyBot;c.fillRect(0,0,W,H);
+  const jit=(hex,a)=>{const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const d=()=>Math.round((rnd()-.5)*a);return `rgb(${Math.min(255,Math.max(0,r+d()))},${Math.min(255,Math.max(0,g+d()))},${Math.min(255,Math.max(0,b+d()))})`};
+  for(let i=0;i<5200;i++){const x=rnd()*W,y=rnd()*H;c.fillStyle=jit(region(x,y),70);c.save();c.translate(x,y);c.rotate((y<hor?-.3:.4)+(rnd()-.5)*.6);c.beginPath();c.ellipse(0,0,4+rnd()*3,1.6+rnd(),0,0,7);c.fill();c.restore()}
+  return}
+ // realista: smooth gradients, shading, details
+ let g=c.createLinearGradient(0,0,0,hor);g.addColorStop(0,skyTop);g.addColorStop(1,skyBot);c.fillStyle=g;c.fillRect(0,0,W,hor);
+ let sg=c.createRadialGradient(sunX,40,2,sunX,40,30);sg.addColorStop(0,"#fff6c4");sg.addColorStop(.6,"#ffd23f");sg.addColorStop(1,"rgba(255,210,63,0)");c.fillStyle=sg;c.beginPath();c.arc(sunX,40,30,0,7);c.fill();
+ c.fillStyle="#8fa8bf";c.beginPath();c.moveTo(0,hor);c.lineTo(70,hor-35);c.lineTo(140,hor-10);c.lineTo(220,hor-40);c.lineTo(320,hor-5);c.lineTo(320,hor);c.fill();
+ g=c.createLinearGradient(0,hor,0,H);g.addColorStop(0,"#7cbf5a");g.addColorStop(1,"#3f7a2d");c.fillStyle=g;c.fillRect(0,hor,W,H-hor);
+ c.fillStyle="rgba(0,0,0,.18)";c.beginPath();c.ellipse(houseX+45,hor+12,48,6,0,0,7);c.fill();
+ g=c.createLinearGradient(houseX,0,houseX+70,0);g.addColorStop(0,houseCol);g.addColorStop(1,"#00000033");c.fillStyle=houseCol;c.fillRect(houseX,hor-40,70,50);c.fillStyle=g;c.fillRect(houseX+50,hor-40,20,50);
+ c.fillStyle="#7a2e22";c.beginPath();c.moveTo(houseX-6,hor-40);c.lineTo(houseX+35,hor-72);c.lineTo(houseX+76,hor-40);c.fill();
+ c.fillStyle="#4a3020";c.fillRect(houseX+27,hor-14,16,24);c.fillStyle="#cfe8f7";c.fillRect(houseX+8,hor-30,13,12);c.fillRect(houseX+50,hor-30,13,12);
+ c.strokeStyle="#ffffff";c.lineWidth=1.5;[[houseX+8,hor-30],[houseX+50,hor-30]].forEach(([x,y])=>{c.strokeRect(x,y,13,12);c.beginPath();c.moveTo(x+6.5,y);c.lineTo(x+6.5,y+12);c.moveTo(x,y+6);c.lineTo(x+13,y+6);c.stroke()});
+ c.fillStyle="#6b4423";c.fillRect(treeX-4,hor-30,8,42);
+ [[0,-48,26,"#2f6b2f"],[-14,-38,18,"#3d8a3d"],[14,-40,18,"#2a5e2a"],[0,-62,16,"#4c9a44"]].forEach(([dx,dy,r,col])=>{let tg=c.createRadialGradient(treeX+dx-6,hor+dy-6,2,treeX+dx,hor+dy,r);tg.addColorStop(0,"#6fbf5f");tg.addColorStop(1,col);c.fillStyle=tg;c.beginPath();c.arc(treeX+dx,hor+dy,r,0,7);c.fill()});
+}
+function artQ(){const style=R(["realista","abstracto","impresionista"]);
+ return {sk:"arte_style",type:"mc",art:style,prompt:"¿Qué tipo de arte es?",hint:"Realista, abstracto o impresionista?",choices:["realista","abstracto","impresionista"],answer:[style],show:style,why:`${STY[style].trick}`}}
+function styDescQ(){const style=R(Object.keys(STY)),d=R(STY[style].d);
+ return {sk:"arte_style",type:"mc",prompt:`“${d}” ¿Qué estilo es?`,hint:"Read the description in Spanish.",choices:["realista","abstracto","impresionista"],answer:[style],show:style,why:`${STY[style].trick}`}}
+function afillQ(i){const [t,acc]=i!==undefined?AFILL[i]:R(AFILL);const en=AFILL.find(x=>x[0]===t)[2];
+ return {sk:"arte_fill",type:"type",prompt:t,hint:"Fill in the blank with an art word.",answer:acc,show:acc[0],why:`In English: ${en}`,bank:true}}
+const ARTPR=[["arte_fill","Arte · Vocabulario","Fill in the blank","Sentences like her quiz: El pintor pinta con un ___."],["arte_tools","Arte · Herramientas","Tools & art forms","What does a painter use? Which art form is it?"],["arte_style","Arte · Estilos","Realista, abstracto o impresionista","Look at a painting or read a description in Spanish."]];
+function arteHome(){
+ nav("arte");stats();const r=readyArte();
+ view.innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
+  <section class="card"><div class="meta"><span>Quiz: Capítulo 2 · Arte</span><span></span></div>
+   <div class="row" style="gap:14px"><span class="big">${r}%</span><div style="flex:1;min-width:170px"><div class="small muted">Arte quiz readiness</div><div class="meter"><i style="width:${r}%"></i></div></div></div>
+   <p class="small muted">The quiz is fill-in-the-blank with art vocabulary: art forms (cerámica, pinturas, arte textil, estatuas), the tools a painter uses, and how to tell realista, abstracto, and impresionista apart.</p></section>
+  <h2>1 · Aprende</h2><div class="grid">
+   <button class="tile" id="a1"><span class="tag">Vocabulario</span><span class="name">Formas de arte y herramientas</span><span class="small muted">Every word with its meaning.</span></button>
+   <button class="tile" id="a2"><span class="tag">Estilos</span><span class="name">Realista, abstracto, impresionista</span><span class="small muted">See an example of each and how to describe it in Spanish.</span></button>
+   <button class="tile" id="a3"><span class="tag">Game</span><span class="name">Match the art words</span><span class="small muted">Spanish ↔ English.</span></button></div>
+  <h2>2 · Practica</h2><div class="grid">${ARTPR.map(([k,tag,n,d])=>`<button class="tile" data-k="${k}"><span class="tag">${tag}</span><span class="name">${n}</span><span class="small muted">${d}</span><div class="mini"><i style="width:${pct(k)}%"></i></div></button>`).join("")}</div>
+  <h2>3 · Examen</h2><section class="card"><p>A 20-question practice quiz: mostly fill-in-the-blank, plus tools and art styles.</p>
+   <div class="row"><button class="btn primary" id="ax">Start the Arte practice quiz</button>${S.bestArte!=null?`<span class="small muted">Best: <b>${S.bestArte}%</b></span>`:""}</div></section></div>`;
+ a1.onclick=artVocab;a2.onclick=artStyles;a3.onclick=artMatch;ax.onclick=arteExam;
+ view.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=b.dataset.k,n=ARTPR.find(p=>p[0]===k)[2];
+  const qs=k==="arte_fill"?shuffle(AFILL.map((_,i)=>i)).slice(0,10).map(afillQ):k==="arte_tools"?shuffle(ATOOLS).slice(0,10).map(q=>Object.assign({},q,{choices:shuffle(q.choices)})):Array.from({length:10},()=>Math.random()<.6?artQ():styDescQ());
+  runQs(qs,{title:n,after:arteHome})});
+}
+function artVocab(){
+ nav("arte");
+ view.innerHTML=`<section class="card pop"><div class="meta"><span>Arte · Vocabulario</span><span></span></div><h2>Formas de arte y herramientas</h2>
+  ${Object.entries(ARTV).map(([h,rows])=>`<h3>${h}</h3><div class="scroll"><table class="ptab"><tbody>${rows.map(([es,en])=>`<tr><td><b>${es}</b></td><td>${en}</td></tr>`).join("")}</tbody></table></div>`).join("")}
+  <div class="warn"><b>Tip:</b> <b>la pintura</b> means both “painting” (the artwork) and “paint” (what you paint with). <b>Las pinturas</b> = paintings or paints.</div>
+  <div class="keybox">¿Qué usa el pintor para pintar? → Usa <b>un pincel</b>, <b>pinturas</b>, <b>una paleta</b>, <b>un lienzo</b> y <b>un caballete</b>.</div>
+  <div class="row"><button class="btn primary" id="nx">Next: the three art styles →</button><button class="btn" id="bk">Back to Arte</button></div></section>`;
+ nx.onclick=artStyles;bk.onclick=arteHome;
+}
+function artStyles(){
+ nav("arte");
+ view.innerHTML=`<section class="card pop"><div class="meta"><span>Arte · Estilos</span><span></span></div><h2>Realista, abstracto, impresionista</h2>
+  ${Object.entries(STY).map(([k,v])=>`<div class="eg" style="display:flex;flex-direction:column;gap:8px"><h3>El arte ${k} <span class="muted small">(${v.en})</span></h3>
+   <canvas class="artc" data-s="${k}" style="width:100%;max-width:320px;aspect-ratio:320/220;border-radius:10px;border:1px solid var(--line)" role="img" aria-label="Example of ${v.en} art"></canvas>
+   <ul style="margin:0;padding-left:20px">${v.d.map(x=>`<li>${x}</li>`).join("")}</ul><div class="keybox">${v.trick}</div></div>`).join("")}
+  <div class="row"><button class="btn sm" id="rd">Show new examples</button></div>
+  <div class="row"><button class="btn primary" id="pr">Practice: which style is it?</button><button class="btn" id="bk">Back to Arte</button></div></section>`;
+ const paint=()=>view.querySelectorAll("canvas.artc").forEach(c=>drawArt(c,c.dataset.s));paint();
+ rd.onclick=paint;bk.onclick=arteHome;pr.onclick=()=>runQs(Array.from({length:10},()=>Math.random()<.6?artQ():styDescQ()),{title:"Realista, abstracto o impresionista",after:arteHome});
+}
+function artMatch(){
+ nav("arte");const all=Object.values(ARTV).flat().filter(r=>!r[0].includes("/")),items=shuffle(all).slice(0,6);let sel=null,done=0;
+ view.innerHTML=`<section class="card pop"><div class="meta"><span>Match the art words</span><span id="ms">0 of 6</span></div><p class="small muted">Tap a Spanish word, then its English meaning.</p>
+  <div class="match"><div class="col">${shuffle(items).map(f=>`<button class="mt" data-s="es" data-k="${esc(f[0])}">${f[0]}</button>`).join("")}</div><div class="col">${shuffle(items).map(f=>`<button class="mt" data-s="en" data-k="${esc(f[0])}">${f[1]}</button>`).join("")}</div></div>
+  <div id="fb"></div><div class="row"><button class="btn" id="bk">Back to Arte</button></div></section>`;
+ bk.onclick=arteHome;
+ view.querySelectorAll(".mt").forEach(b=>b.onclick=()=>{if(b.classList.contains("done"))return;
+  if(!sel||sel.dataset.s===b.dataset.s){if(sel)sel.classList.remove("sel");sel=b;b.classList.add("sel");return}
+  if(sel.dataset.k===b.dataset.k){sel.classList.remove("sel");sel.classList.add("done");b.classList.add("done");sel=null;done++;S.xp+=3;save();stats();ms.textContent=`${done} of 6`;
+   if(done===6){fb.innerHTML=`<div class="fb ok pop"><strong>¡Excelente!</strong></div><div class="row" style="margin-top:10px"><button class="btn primary" id="ag">Play again</button></div>`;ag.onclick=artMatch}}
+  else{const a=sel,c=b;a.classList.add("miss");c.classList.add("miss");setTimeout(()=>{a.classList.remove("miss","sel");c.classList.remove("miss")},450);sel=null}});
+}
+function arteExam(){
+ const qs=shuffle([...shuffle(AFILL.map((_,i)=>i)).slice(0,11).map(afillQ),...shuffle(ATOOLS).slice(0,4).map(q=>Object.assign({},q,{choices:shuffle(q.choices)})),artQ(),artQ(),artQ(),styDescQ(),styDescQ()]);
+ runQs(qs,{title:"Arte practice quiz",noQuit:true,after:arteHome,done:(r,t,missed)=>{const p=Math.round(r/t*100);S.bestArte=Math.max(S.bestArte??0,p);S.log.unshift({t:Date.now(),mode:"Arte practice quiz",score:r,total:t});S.log=S.log.slice(0,20);save();stats();
+  const msg=p>=90?"¡Excelente! Ready for the Arte quiz.":p>=80?"Very good. Review the misses below.":p>=65?"Getting there. Practice fill in the blank again.":"Go back to the vocabulary list, then practice.";
+  view.innerHTML=`<section class="card pop"><div class="meta"><span>Arte practice quiz</span><span>Results</span></div><p class="score">${r} / ${t}</p><p>${p}% · ${msg}</p>
+   ${missed.length?`<div><p class="small muted">Review these:</p><ul class="list">${missed.map(q=>`<li>${esc(q.prompt)} → <b>${esc(q.show)}</b></li>`).join("")}</ul></div>`:""}
+   <div class="row">${missed.length?`<button class="btn primary" id="rm">Retry my misses</button>`:""}<button class="btn" id="ag">New quiz</button><button class="btn" id="hm">Back to Arte</button></div></section>`;
+  const rm=document.getElementById("rm");if(rm)rm.onclick=()=>runQs(missed.slice(),{title:"Retry misses",after:arteHome});ag.onclick=arteExam;hm.onclick=arteHome}});
+}
+
+/* ================= STORAGE ================= */
+const SK={poss:"Possessive adjectives",choose:"Which possessive?",family:"Family possessives",de:"De + persona",fix:"Correct the error",hay:"Hay sentences",haych:"Which Hay sentence?",read:"Reading & family tree",guide:"Study guide exercises",arte_fill:"Arte: fill in the blank",arte_tools:"Arte: tools & art forms",arte_style:"Arte: realista / abstracto / impresionista"};
+const KEY="familia-hay-v1";
+function blank(){const s={};for(const k in SK)s[k]={h:[],att:0,ok:0};return {xp:0,days:[],skills:s,log:[],best:null,learned:{}}}
+function load(){try{const d=JSON.parse(localStorage.getItem(KEY));if(d&&d.skills){const b=blank();for(const k in b.skills)if(!d.skills[k])d.skills[k]=b.skills[k];d.learned=d.learned||{};return d}}catch(e){}return blank()}
+let S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+const dkey=d=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function markDay(){const t=dkey(new Date());if(!S.days.includes(t)){S.days.push(t);S.days=S.days.slice(-60)}}
+function streak(){let n=0;const d=new Date();if(!S.days.includes(dkey(d)))d.setDate(d.getDate()-1);while(S.days.includes(dkey(d))){n++;d.setDate(d.getDate()-1)}return n}
+function rec(k,ok){const s=S.skills[k];s.att++;if(ok)s.ok++;s.h.push(ok?1:0);s.h=s.h.slice(-10);if(ok)S.xp+=10;markDay();save();stats()}
+const pct=k=>{const h=S.skills[k].h;return h.length?Math.round(h.reduce((a,b)=>a+b,0)/Math.max(h.length,5)*100):0};
+function readyArte(){const ks=["arte_fill","arte_tools","arte_style"];return Math.round(ks.reduce((a,k)=>a+pct(k),0)/ks.length)}
+function ready(){const ks=Object.keys(SK).filter(k=>k!=="guide"&&!k.startsWith("arte"));return Math.round(ks.reduce((a,k)=>a+pct(k),0)/ks.length)}
+
+/* ================= SHELL ================= */
+function stats(){document.getElementById("stats").innerHTML=`<span class="stat">⭐ ${S.xp} pts</span><span class="stat">🔥 ${streak()} día${streak()===1?"":"s"}</span><span class="stat">Familia ${ready()}%</span><span class="stat">Arte ${readyArte()}%</span>`}
+function nav(k){window.scrollTo(0,0);["home","learn","prac","test","prog","arte"].forEach(x=>document.getElementById("nav-"+x).setAttribute("aria-pressed",x===k))}
+document.getElementById("nav-home").onclick=home;document.getElementById("brand").onclick=home;
+document.getElementById("nav-learn").onclick=()=>learn(0);
+document.getElementById("nav-prac").onclick=pracHome;
+document.getElementById("nav-test").onclick=testHome;
+document.getElementById("nav-prog").onclick=progress;
+document.getElementById("nav-arte").onclick=arteHome;
+
+function home(){
+ nav("home");stats();const r=ready(),L=Object.keys(S.learned).length;
+ view.innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
+  <h2>Quiz 1 · Possession, Family Tree &amp; Hay</h2>
+  <section class="card"><div class="row" style="gap:14px"><span class="big">${r}%</span><div style="flex:1;min-width:170px"><div class="small muted">Quiz readiness across all skills</div><div class="meter"><i style="width:${r}%"></i></div></div></div>
+   <p class="small muted">Plan: <b>1.</b> Aprende (read the 3 lessons) → <b>2.</b> Practica → <b>3.</b> Examen. Quiz is Friday. ¡Tú puedes!</p></section>
+  <div class="grid">
+   <button class="tile" id="h1"><span class="tag">Step 1 · ${L}/3 read</span><span class="name">Aprende</span><span class="small muted">Possession, the family tree, and Hay, explained simply.</span></button>
+   <button class="tile" id="h2"><span class="tag">Step 2</span><span class="name">Practica</span><span class="small muted">8 games with new questions every time, plus her study guide exercises.</span></button>
+   <button class="tile" id="h3"><span class="tag">Step 3</span><span class="name">Examen</span><span class="small muted">A 25-question practice quiz.</span></button>
+   <button class="tile" id="h4"><span class="tag">From her study guide</span><span class="name">Study guide exercises</span><span class="small muted">Every exercise (A1–C2), checked with her answer key.</span></button>
+  </div>
+  <h2>Quiz 2 · Capítulo 2: Arte</h2>
+  <section class="card"><div class="row" style="gap:14px"><span class="big">${readyArte()}%</span><div style="flex:1;min-width:170px"><div class="small muted">Arte readiness: art forms, a painter's tools, and realista / abstracto / impresionista</div><div class="meter"><i style="width:${readyArte()}%"></i></div></div></div>
+   <div class="row"><button class="btn primary" id="h5">🎨 Go to Arte</button></div></section></div>`;
+ h1.onclick=()=>learn(0);h2.onclick=pracHome;h3.onclick=testHome;h4.onclick=guideMenu;h5.onclick=arteHome;
+}
+
+/* ================= LEARN ================= */
+const LESSONS=[
+ {t:"A · Possession",html:()=>`
+  <h3>1. Possessive adjectives</h3>
+  <p>They go <b>before</b> the noun and show who owns it.</p>
+  <div class="scroll"><table class="ptab"><thead><tr><th>Singular</th><th>Plural</th><th>Meaning</th></tr></thead><tbody>
+   <tr><td><b>mi</b></td><td><b>mis</b></td><td>my</td></tr><tr><td><b>tu</b></td><td><b>tus</b></td><td>your (familiar)</td></tr>
+   <tr><td><b>su</b></td><td><b>sus</b></td><td>his / her / your (formal) / their / your (pl.)</td></tr>
+   <tr><td><b>nuestro / nuestra</b></td><td><b>nuestros / nuestras</b></td><td>our</td></tr><tr><td><b>vuestro / vuestra</b></td><td><b>vuestros / vuestras</b></td><td>your (pl., Spain)</td></tr></tbody></table></div>
+  <div class="keybox">The possessive matches the THING owned, not the owner. “Their dog” = <b>su</b> perro (one dog), even though “they” are many people.</div>
+  <div class="eg"><b>Examples:</b> my tree → mi árbol · our chairs → nuestras sillas · their cousins → sus primos</div>
+  <div class="warn"><b>Watch out:</b> the possessive <b>tu</b> (your) has <b>no accent</b>. <b>tú</b> with an accent means “you.” → Tú tienes <b>tu</b> libro.</div>
+  <h3>2. De + persona (like English ’s)</h3>
+  <div class="keybox">noun + de + person → Ana’s cat = el gato <b>de</b> Ana</div>
+  <div class="eg"><b>de + el = del</b> (always!) → the teacher’s book = el libro <b>del</b> maestro<br>But de + la, de + los, de + las don’t change → la computadora <b>de la</b> chica</div>`},
+ {t:"B · Family tree possessives",html:()=>`
+  <p>Read the story, then tap anyone in the tree to see who they are.</p>
+  <div class="reading">“${READING}”</div>
+  <div class="tree" id="tree">${treeSVG(null)}</div>
+  <div class="fb info" id="who"><span>Tap a person in the tree.</span></div>
+  <div class="eg"><b>Family words:</b> padre/madre (padres) · hermano/hermana · abuelo/abuela (abuelos) · tío/tía · primo/prima · hijo/hija (hijos)</div>
+  <div class="keybox">su / sus can mean his, her, your, or their, so read the sentence carefully. Then look at the NOUN (the family member or thing owned): one → su, more than one → sus.</div>
+  <div class="eg"><b>From her quiz:</b> (my) hermano → mi hermano · (our) abuelos → nuestros abuelos · (her) hermana → su hermana · (her) hijos → sus hijos · (your) tío → tu tío · (their) perros → sus perros</div>
+  <div class="row"><button class="btn sm" id="vm">Play: match the family words</button></div>`},
+ {t:"C · Hay (there is / there are)",html:()=>`
+  <div class="keybox">Hay + un / una / unos / unas + noun</div>
+  <p><b>Hay</b> means both “there is” and “there are.” It never changes.</p>
+  <div class="scroll"><table class="ptab"><thead><tr><th>English</th><th>Spanish</th></tr></thead><tbody>
+   <tr><td>There is a bed.</td><td>Hay <b>una</b> cama.</td></tr><tr><td>There is a dog.</td><td>Hay <b>un</b> perro.</td></tr>
+   <tr><td>There are (some) mirrors.</td><td>Hay <b>unos</b> espejos.</td></tr><tr><td>There are lamps.</td><td>Hay lámparas. / Hay <b>unas</b> lámparas.</td></tr>
+   <tr><td>There are three shirts.</td><td>Hay <b>tres</b> camisas.</td></tr></tbody></table></div>
+  <div class="warn"><b>Common mistake:</b> ❌ Hay son lámparas. ✔️ Hay lámparas. No other verb after hay!</div>
+  <div class="eg"><b>Quiz vocabulary:</b> espejos (mirrors) · una cama (a bed) · roperos / armarios (closets) · lámparas (lamps) · un perro (a dog) · camisas (shirts) · una merienda (a snack) · un reloj (a clock) → relojes</div>`}];
+function learn(k){
+ nav("learn");S.learned[k]=1;save();const L=LESSONS[k];
+ view.innerHTML=`<section class="card pop"><div class="meta"><span>Aprende · ${k+1} of 3</span><span></span></div><h2>${L.t}</h2>${L.html()}
+  <div class="row"><button class="btn" id="pv" ${k===0?"disabled":""}>← Back</button><button class="btn primary" id="nx">${k===2?"Start practicing":"Next lesson →"}</button></div></section>`;
+ pv.onclick=()=>learn(k-1);nx.onclick=()=>k===2?pracHome():learn(k+1);
+ if(k===1){const wire=()=>document.querySelectorAll("#tree .node").forEach(n=>{const act=()=>{const p=PEOPLE[n.dataset.p];document.getElementById("tree").innerHTML=treeSVG(n.dataset.p);document.getElementById("who").innerHTML=`<strong>${p[0]}</strong><span>${p[2]}</span>`;wire()};n.onclick=act;n.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();act()}}});wire();
+  vm.onclick=famMatch}
+}
+function famMatch(){
+ nav("learn");const items=shuffle(FAM.filter(f=>!f[3].includes("(")||true)).slice(0,6);let sel=null,done=0;
+ const L=shuffle(items),Rr=shuffle(items);
+ view.innerHTML=`<section class="card pop"><div class="meta"><span>Family words</span><span id="ms">0 of 6</span></div><p class="small muted">Tap a Spanish word, then its English meaning.</p>
+  <div class="match"><div class="col">${L.map(f=>`<button class="mt" data-s="es" data-k="${f[0]}">${f[0]}</button>`).join("")}</div><div class="col">${Rr.map(f=>`<button class="mt" data-s="en" data-k="${f[0]}">${f[3]}</button>`).join("")}</div></div>
+  <div id="fb"></div><div class="row"><button class="btn" id="bk">Back to the lesson</button></div></section>`;
+ bk.onclick=()=>learn(1);
+ view.querySelectorAll(".mt").forEach(b=>b.onclick=()=>{if(b.classList.contains("done"))return;
+  if(!sel||sel.dataset.s===b.dataset.s){if(sel)sel.classList.remove("sel");sel=b;b.classList.add("sel");return}
+  if(sel.dataset.k===b.dataset.k){sel.classList.remove("sel");sel.classList.add("done");b.classList.add("done");sel=null;done++;S.xp+=3;save();stats();ms.textContent=`${done} of 6`;
+   if(done===6){fb.innerHTML=`<div class="fb ok pop"><strong>¡Excelente!</strong></div><div class="row" style="margin-top:10px"><button class="btn primary" id="ag">Play again</button></div>`;ag.onclick=famMatch}}
+  else{const a=sel,c=b;a.classList.add("miss");c.classList.add("miss");setTimeout(()=>{a.classList.remove("miss","sel");c.classList.remove("miss")},450);sel=null}});
+}
+
+/* ================= QUESTION RUNNER ================= */
+function runQs(qs,o){
+ let k=0,right=0;const missed=[];
+ const draw=()=>{
+  if(k>=qs.length)return finish();
+  const q=qs[k];let body="";
+  if(q.type==="mc")body=`<div class="choices">${q.choices.map((c,i)=>`<button class="choice" data-i="${i}">${esc(c)}</button>`).join("")}</div>`;
+  else body=`<form class="typed" id="tf"><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your answer" placeholder="Escribe aquí"><button class="btn primary" type="submit">Check</button></form>
+   <div class="accents">${["á","é","í","ó","ú","ñ"].map(a=>`<button type="button" data-a="${a}" aria-label="Insert ${a}">${a}</button>`).join("")}</div>`;
+  view.innerHTML=`<section class="card pop"><div class="meta"><span>${esc(q.sec||o.title)}</span><span>${k+1} of ${qs.length} · ${right} right</span></div>
+   <div class="meter"><i style="width:${k/qs.length*100}%"></i></div>
+   ${q.reading?`<div class="reading small">“${READING}”</div>`:""}
+   ${q.art?`<canvas id="artq" style="width:100%;max-width:320px;aspect-ratio:320/220;border-radius:10px;border:1px solid var(--line);align-self:center" role="img" aria-label="A painting to identify"></canvas>`:""}
+   <p class="prompt">${esc(q.prompt).replace("___",'<span style="color:var(--accent)">____</span>')}</p>${q.hint?`<p class="hint">${esc(q.hint)}</p>`:""}
+   ${body}<div id="fb"></div>${o.noQuit?"":`<div class="row"><button class="btn" id="quit">End round</button></div>`}</section>`;
+  if(q.art)drawArt(document.getElementById("artq"),q.art);
+  if(q.bank){const tf0=document.getElementById("tf");const bw=document.createElement("div");bw.innerHTML=`<button class="btn sm" type="button" id="bkt">Show word bank</button><div id="bkw" hidden style="margin-top:8px" class="small">${ABANK.join(" · ")}</div>`;tf0.after(bw);bkt.onclick=()=>{bkw.hidden=!bkw.hidden;bkt.textContent=bkw.hidden?"Show word bank":"Hide word bank"}}
+  const qb=document.getElementById("quit");if(qb)qb.onclick=()=>k?finish():o.after();
+  const fin=(ok,given,note)=>{rec(q.sk,ok);if(o.sk2&&o.sk2!==q.sk)rec(o.sk2,ok);if(ok)right++;else missed.push(q);
+   fb.innerHTML=`<div class="fb ${ok?"ok":"bad"} pop"><strong>${ok?R(["¡Muy bien!","¡Correcto!","¡Perfecto!","¡Excelente!"]):note&&note.close?"So close!":"Not quite"}</strong>
+    ${ok&&q.answer.length===1?"":`<span>Answer: <b>${esc(q.show)}</b></span>`}${note&&note.msg?`<span class="small">${note.msg}</span>`:""}${q.why?`<span class="small">${q.why}</span>`:""}</div>
+    <div class="row" style="margin-top:10px"><button class="btn primary" id="nx">${k+1>=qs.length?"Finish":"Next"}</button></div>`;
+   nx.onclick=()=>{k++;draw()};nx.focus()};
+  if(q.type==="mc")view.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const pick=q.choices[+b.dataset.i],ok=q.answer.includes(pick);
+   view.querySelectorAll(".choice").forEach(c=>{c.disabled=true;if(q.answer.includes(q.choices[+c.dataset.i]))c.classList.add("right")});if(!ok)b.classList.add("wrong");fin(ok,pick)});
+  else{const inp=document.getElementById("ans");inp.focus();
+   view.querySelectorAll(".accents button").forEach(b=>b.onclick=()=>{const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??s;inp.value=inp.value.slice(0,s)+b.dataset.a+inp.value.slice(e);inp.focus();inp.setSelectionRange(s+1,s+1)});
+   tf.onsubmit=e=>{e.preventDefault();const v=inp.value;if(!v.trim())return;inp.disabled=true;
+    const nv=norm(v),ok=q.answer.some(a=>norm(a)===nv);let note=null;
+    if(!ok){const closeA=q.answer.some(a=>noAcc(norm(a))===noAcc(nv));
+     if(/\btú\b/.test(nv)&&q.answer.some(a=>/\btus?\b/.test(norm(a))))note={msg:"Possessive <b>tu</b> has no accent. (<b>tú</b> with an accent means “you.”)"};
+     else if(/\bde el\b/.test(nv))note={msg:"Remember: de + el = <b>del</b>."};
+     else if(/^hay (son|es|están|esta|está)\b/.test(nv))note={msg:"No verb after hay! ❌ Hay son… ✔️ Hay…"};
+     else if(closeA)note={close:true,msg:"Check your accents."};}
+    fin(ok,v,note)}}
+ };
+ const finish=()=>{const total=k+(document.getElementById("nx")?1:0)||qs.length;if(o.done)return o.done(right,qs.length,missed);
+  S.log.unshift({t:Date.now(),mode:o.title,score:right,total:qs.length});S.log=S.log.slice(0,20);save();
+  view.innerHTML=`<section class="card pop"><div class="meta"><span>${esc(o.title)}</span><span>Done</span></div><p class="score">${right} / ${qs.length}</p>
+   ${missed.length?`<div><p class="small muted">Review these:</p><ul class="list">${missed.map(q=>`<li>${esc(q.prompt)} → <b>${esc(q.show)}</b></li>`).join("")}</ul></div>`:"<p>¡Perfecto! No mistakes.</p>"}
+   <div class="row">${missed.length?`<button class="btn primary" id="rm">Retry my misses</button>`:""}<button class="btn" id="bk">Back</button></div></section>`;
+  const rm=document.getElementById("rm");if(rm)rm.onclick=()=>runQs(missed.slice(),o);bk.onclick=o.after};
+ draw();
+}
+
+/* ================= PRACTICE ================= */
+const PR=[["poss","A · Possession","Possessive adjectives","Translate: “our dog,” “my books”…"],["choose","A · Possession","Which possessive?","Read the sentence and pick the right one."],
+ ["de","A · Possession","De + persona","“Ana’s cat” → el gato de Ana. Watch for del."],["fix","A · Possession","Correct the error","Find and fix the mistake."],
+ ["family","B · Family tree","Family possessives","(her) hijos → sus hijos"],["read","B · Family tree","Reading & family tree","Questions about Clara, Tomás, Julián, and Marta."],
+ ["hay","C · Hay","Hay sentences","There is a bed → Hay una cama."],["haych","C · Hay","Which Hay sentence?","Spot the correct sentence."]];
+function pracHome(){
+ nav("prac");stats();
+ view.innerHTML=`<div style="display:flex;flex-direction:column;gap:16px"><section class="card"><h2>Practica</h2><p class="muted">Rounds of 10 with new questions every time. Then try her study guide exercises.</p>
+  <div class="row"><button class="btn primary" id="gd">Study guide exercises (A1–C2)</button><button class="btn" id="wk">Practice my weakest skill</button></div></section>
+  <div class="grid">${PR.map(([k,tag,n,d])=>`<button class="tile" data-k="${k}"><span class="tag">${tag}</span><span class="name">${n}</span><span class="small muted">${d}</span><div class="mini"><i style="width:${pct(k)}%"></i></div></button>`).join("")}</div></div>`;
+ gd.onclick=guideMenu;
+ wk.onclick=()=>{const k=PR.map(p=>p[0]).sort((a,b)=>pct(a)-pct(b))[0];startSkill(k)};
+ view.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>startSkill(b.dataset.k));
+}
+function startSkill(k){const name=PR.find(p=>p[0]===k)[2];const qs=k==="read"?shuffle(READQ).slice(0,8).map(q=>Object.assign({},q,{choices:shuffle(q.choices)})):Array.from({length:10},()=>GEN[k]());runQs(qs,{title:name,after:pracHome})}
+function guideMenu(){
+ nav("prac");const secs=[...new Set(GUIDE.map(q=>q.sec))];
+ view.innerHTML=`<section class="card pop"><div class="meta"><span>Study guide exercises</span><span>${GUIDE.length} items</span></div>
+  <p>The exact exercises from her study guide, checked against her answer key. Pick a section or do them all.</p>
+  <div class="grid">${secs.map(s=>`<button class="tile" data-s="${esc(s)}"><span class="tag">${s.split(" · ")[0]}</span><span class="name" style="font-size:1rem">${esc(s.split(" · ")[1])}</span><span class="small muted">${GUIDE.filter(q=>q.sec===s).length} items</span></button>`).join("")}</div>
+  <div class="row"><button class="btn primary" id="all">Do all ${GUIDE.length}</button><button class="btn" id="bk">Back</button></div></section>`;
+ all.onclick=()=>runQs(GUIDE.slice(),{title:"Study guide",after:guideMenu});bk.onclick=pracHome;
+ view.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>runQs(GUIDE.filter(q=>q.sec===b.dataset.s),{title:b.dataset.s,after:guideMenu}));
+}
+
+/* ================= TEST ================= */
+function testHome(){
+ nav("test");stats();
+ view.innerHTML=`<section class="card"><h2>Examen de práctica</h2><p>25 questions covering all three sections, like her quiz: possessive adjectives, de + persona, family possessives, the reading, and Hay. New questions every time.</p>
+  <p class="muted small">She sees the right answer after each question and a review list at the end.</p>
+  <div class="row"><button class="btn primary" id="go">Start the practice quiz</button>${S.best!==null?`<span class="small muted">Best: <b>${S.best}%</b></span>`:""}</div></section>`;
+ go.onclick=()=>{const plan=[["poss",4],["choose",4],["de",3],["fix",2],["family",4],["hay",4],["haych",2]];
+  let qs=[];plan.forEach(([k,n])=>{for(let i=0;i<n;i++)qs.push(GEN[k]())});qs=qs.concat(shuffle(READQ).slice(0,2).map(q=>Object.assign({},q,{choices:shuffle(q.choices)})));
+  runQs(shuffle(qs),{title:"Practice quiz",noQuit:true,after:testHome,done:(r,t,missed)=>{const p=Math.round(r/t*100);S.best=Math.max(S.best??0,p);S.log.unshift({t:Date.now(),mode:"Practice quiz",score:r,total:t});S.log=S.log.slice(0,20);save();stats();
+   const msg=p>=90?"¡Excelente! She's ready for Friday.":p>=80?"Very good. Review the misses below.":p>=65?"Getting there. Practice the weakest skill, then try again.":"Go back to Aprende, then practice each section.";
+   view.innerHTML=`<section class="card pop"><div class="meta"><span>Practice quiz</span><span>Results</span></div><p class="score">${r} / ${t}</p><p>${p}% · ${msg}</p>
+    ${missed.length?`<div><p class="small muted">Review these:</p><ul class="list">${missed.map(q=>`<li>${esc(q.prompt)} → <b>${esc(q.show)}</b></li>`).join("")}</ul></div>`:""}
+    <div class="row">${missed.length?`<button class="btn primary" id="rm">Retry my misses</button>`:""}<button class="btn" id="ag">New quiz</button><button class="btn" id="hm">Home</button></div></section>`;
+   const rm=document.getElementById("rm");if(rm)rm.onclick=()=>runQs(missed.slice(),{title:"Retry misses",after:testHome});ag.onclick=testHome;hm.onclick=home}})};
+}
+
+/* ================= PROGRESS ================= */
+function progress(){
+ nav("prog");stats();const f=t=>new Date(t).toLocaleDateString(undefined,{month:"short",day:"numeric"});
+ view.innerHTML=`<div style="display:flex;flex-direction:column;gap:16px">
+  <section class="card"><h2>Skills</h2><p class="small muted">Based on her last 10 answers in each skill.</p>
+   <div class="scroll"><table class="wtable"><tbody>${Object.entries(SK).map(([k,n])=>`<tr><td>${n}</td><td style="width:40%"><div class="meter"><i style="width:${pct(k)}%"></i></div></td><td class="num">${S.skills[k].att?pct(k)+"%":"–"}</td><td class="num">${S.skills[k].ok}/${S.skills[k].att}</td></tr>`).join("")}</tbody></table></div></section>
+  <section class="card"><h2>Recent rounds</h2>${S.log.length?`<div class="scroll"><table class="wtable"><tbody>${S.log.map(l=>`<tr><td class="num">${f(l.t)}</td><td>${esc(l.mode)}</td><td class="num">${l.score} / ${l.total}</td></tr>`).join("")}</tbody></table></div>`:`<p class="muted">No rounds yet.</p>`}</section>
+  <section class="card"><p class="small muted">Progress is saved in this browser on this device.</p><div id="rs"><button class="btn" id="reset">Reset progress</button></div></section></div>`;
+ reset.onclick=()=>{rs.innerHTML=`<div class="confirm"><span>Erase all progress?</span><button class="btn" id="yes">Yes, erase</button><button class="btn" id="no">Cancel</button></div>`;yes.onclick=()=>{S=blank();save();progress()};no.onclick=progress};
+}
+
+home();
+</script>
+
+</body></html>
