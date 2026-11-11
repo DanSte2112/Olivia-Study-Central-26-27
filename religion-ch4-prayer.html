@@ -91,6 +91,7 @@ const FACTS=[
  ["Liturgy","The public prayer of the Church that celebrates the wonderful things God has done for us in Jesus Christ. The word means a public work or service done for the people."],
  ["Liturgy of the Hours","The public prayer of the Church to praise God and sanctify (make holy) the day. Prayed at set times: morning, during the day, evening, and night. It is part of the living Tradition of the Church."],
  ["The Mass","The paschal meal and the most important act of worship in our Catholic faith."],
+ ["The Eucharist","The Eucharist is the Body and Blood of Jesus Christ, truly present under the appearance of bread and wine. Jesus gave up his life on the cross to save us, and at Mass we share in his sacrifice and receive him in Holy Communion. It is the center of the Church's prayer and unites us as the Body of Christ."],
  ["Most important prayer","The Lord's Prayer (Our Father). The disciples asked Jesus to teach them how to pray, and he gave them this prayer."],
  ["Jesus prayed","Jesus prayed traditional Jewish prayers, such as the Shema. He taught: “Ask and you will receive; seek and you will find; knock and the door will be opened to you” (Luke 11:9)."],
  ["Persistent widow","Luke 18:1–8. A widow kept asking a judge until he helped her. Jesus teaches us to keep praying and never give up."],
@@ -110,6 +111,9 @@ const FILL=[
  ["The ___ is the public prayer of the Church to praise God and sanctify the day.","Liturgy of the Hours"],
  ["___ is the public prayer of the Church that celebrates the wonderful things God has done for us in Jesus Christ.","Liturgy"],
  ["The word liturgy means a public ___ or service done for the people.","work"],
+ ["The Eucharist is the Body and ___ of Jesus Christ.","Blood"],
+ ["In the Eucharist we remember that Jesus gave up his ___ to save us.","life"],
+ ["When we receive the Eucharist at Mass, it is called Holy ___.","Communion"],
  ["The ___ is the paschal meal and the most important act of worship in our Catholic faith.","Mass"],
  ["Jesus prayed traditional Jewish prayers, such as the ___.","Shema"],
  ["The Feast of the Annunciation is celebrated on ___.","March 25"],
@@ -136,6 +140,7 @@ const MC=[
  ["Praying on behalf of other people is a prayer of…",["Contrition","Intercession","Adoration","Thanksgiving"],1,"Intercession = asking for what others need."],
  ["Asking God for forgiveness is a prayer of…",["Contrition","Blessing","Praise","Intercession"],0,"Contrition means being sorry and asking forgiveness."],
  ["Asking God for what we need is a prayer of…",["Adoration","Thanksgiving","Petition","Blessing"],2,"Petition (also called supplication) is asking for what we need."],
+ ["Why is the Eucharist important?",["It is a symbol we use only at Christmas","It is the Body and Blood of Christ, who gave his life to save us","It replaces the need to pray","It is a reward for good behavior"],1,"The Eucharist is truly Jesus, the Body and Blood of Christ. He gave up his life to save us, and we receive him in Holy Communion."],
  ["What is the most important act of worship in the Catholic faith?",["The Rosary","The Liturgy of the Hours","The Mass","Personal prayer"],2,"The Mass, the paschal meal, is our most important act of worship."],
  ["What does Jesus teach in the parable of the persistent widow (Luke 18:1–8)?",["Pray only in church","Keep praying and never give up","Short prayers are best","Only pray for big problems"],1,"The widow kept asking until the judge helped her. Never give up on prayer."],
  ["What quality made Mary a model of prayer?",["Her listening heart","Her long prayers","Her singing voice","Her travels"],0,"Mary listened to God. Good prayer includes listening."],
@@ -152,7 +157,8 @@ const MC=[
 
 const SA=[
  {q:"What is prayer?",a:"Prayer is lifting up the mind and heart to God. It is an expression of faith and love. We can pray with words, with song, or in silence.",k:[["mind"],["heart"],["god"],["faith","love"]]},
- {q:"What are the two basic forms of prayer? Explain each.",a:"The two basic forms are communal prayer and personal prayer. Communal prayer is praying with others, like at Mass. Personal prayer is praying alone.",k:[["communal"],["personal"],["others","together"],["alone"]]},
+ {t:1,q:"Why is the Eucharist important?",a:"The Eucharist is important because it is the Body and Blood of Jesus Christ. Jesus gave up his life on the cross to save us from sin. At Mass we share in his sacrifice and receive him in Holy Communion, which unites us with Jesus and with one another as the Body of Christ.",k:[["body"],["blood"],["christ","jesus"],["life","died","sacrifice","save"]]},
+ {t:1,q:"What are the two basic forms of prayer? Explain each.",a:"The two basic forms are communal prayer and personal prayer. Communal prayer is praying with others, like at Mass. Personal prayer is praying alone.",k:[["communal"],["personal"],["others","together"],["alone"]]},
  {q:"What is the Liturgy of the Hours? When is it prayed and why?",a:"The Liturgy of the Hours is the public prayer of the Church to praise God and sanctify the day. It is prayed at set times: morning, during the day, evening, and at night before bed.",k:[["public"],["praise"],["sanctify","holy"],["morning","evening","night"]]},
  {q:"What prayer of Jesus is the most important prayer of the Church? How did we receive it?",a:"The Lord's Prayer (the Our Father) is the most important prayer of the Church. Jesus taught it when his disciples asked him to teach them how to pray.",k:[["lord's prayer","lords prayer","our father"],["disciples"],["teach","taught"]]},
  {q:"Name the five types of prayer and give an example of when you might pray one of them.",a:"Blessing and adoration (praising God), contrition (asking forgiveness), petition (asking for what we need), intercession (asking for what others need), and thanksgiving (thanking God). For example, I might pray a prayer of intercession for a sick family member.",k:[["adoration","blessing","praise"],["contrition"],["petition","supplication"],["intercession"],["thanksgiving"]]},
@@ -211,11 +217,11 @@ function home(){
     <div class="hour h4"><b>Night Prayer</b>before bed</div>
   </section>
   <section class="modes">
-    ${modeCard("learn","Key Facts","Read the 16 big ideas first.",null)}
+    ${modeCard("learn","Key Facts","Read the 17 big ideas first.",null)}
     ${modeCard("fill","Fill in the Blank",`${FILL.length} sentences with a word bank`,m("fill",FILL.length))}
     ${modeCard("mc","Multiple Choice",`${MC.length} questions`,m("mc",MC.length))}
     ${modeCard("sa","Short Answer",`${SA.length} written questions`,m("sa",SA.length))}
-    ${modeCard("test","Practice Test","Mixed: 6 fill-in, 6 multiple choice, 2 short answer",null)}
+    ${modeCard("test","Practice Test","Mixed: 6 fill-in, 6 multiple choice, plus the 2 review-sheet questions",null)}
   </section>
   <div class="panel">
     <div class="row" style="justify-content:space-between">
@@ -244,7 +250,7 @@ function startSA(){startRound(pickOrder("sa",SA.length,full?0:3).map(i=>({type:"
 function startTest(){startRound([
   ...pickOrder("fill",FILL.length,6).map(i=>({type:"fill",i})),
   ...pickOrder("mc",MC.length,6).map(i=>({type:"mc",i})),
-  ...pickOrder("sa",SA.length,2).map(i=>({type:"sa",i}))],"Practice Test");}
+  ...SA.map((x,i)=>x.t?i:-1).filter(i=>i>=0).map(i=>({type:"sa",i}))],"Practice Test");}
 
 function head(){const it=R.items[R.pos];const sec={fill:"Fill in the blank",mc:"Multiple choice",sa:"Short answer"}[it.type];
   return `<div class="row" style="justify-content:space-between"><span class="eyebrow">${R.title} · ${sec}</span><span class="pill">${R.pos+1} / ${R.items.length} · Score ${R.score}</span></div>
@@ -288,7 +294,7 @@ function showMC(i){
 function showSA(i){
   const s=SA[i];
   $("#app").innerHTML=`<div class="panel">${head()}
-   <p class="q">${esc(s.q)}</p><div>${speakBtn(s.q)}</div>
+   ${s.t?'<span class="pill" style="justify-self:start;background:var(--gold-soft);color:var(--gold)">On the review sheet</span>':""}<p class="q">${esc(s.q)}</p><div>${speakBtn(s.q)}</div>
    <label for="ans" class="muted" style="font-size:14px">Write your answer in 2–3 complete sentences.</label>
    <textarea id="ans" placeholder="Type your answer here…"></textarea>
    <div class="row"><button class="btn" id="chk">Check my answer</button></div>
