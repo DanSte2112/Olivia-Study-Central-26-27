@@ -1,0 +1,448 @@
+<title>People of Service Review</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap">
+<style>
+/* Layout: one narrow study column, sticky section tabs, a day-strip of the Hours on Home */
+:root{
+  --bg:#eef1f7; --surface:#ffffff; --ink:#1c2340; --muted:#5a6384; --line:#d5dbea;
+  --accent:#2f3f8f; --accent-soft:#e1e6f7; --gold:#b4862a; --gold-soft:#f6ecd6;
+  --good:#1f7a4d; --good-soft:#dcf1e5; --bad:#b03a3a; --bad-soft:#f8e0e0;
+  --display:"Gloock", Georgia, "Times New Roman", serif;
+  --body:"Nunito Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12162a; --surface:#1b2140; --ink:#e8ebf7; --muted:#a3aac6; --line:#2e3660;
+  --accent:#9eaeff; --accent-soft:#283166; --gold:#e3b75c; --gold-soft:#3a3120;
+  --good:#6fd39f; --good-soft:#173a2a; --bad:#f08c8c; --bad-soft:#432222; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12162a; --surface:#1b2140; --ink:#e8ebf7; --muted:#a3aac6; --line:#2e3660;
+  --accent:#9eaeff; --accent-soft:#283166; --gold:#e3b75c; --gold-soft:#3a3120;
+  --good:#6fd39f; --good-soft:#173a2a; --bad:#f08c8c; --bad-soft:#432222; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.tabs-in{max-width:760px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding-block:8px;scrollbar-width:none}
+.tab{flex:0 0 auto;border:0;background:none;color:var(--muted);font:600 15px var(--body);padding:8px 12px;border-radius:999px;cursor:pointer}
+.tab[aria-current="true"]{background:var(--accent-soft);color:var(--accent)}
+main{max-width:760px;margin:0 auto;padding-block:24px 64px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:20px}
+h1,h2{font-family:var(--display);font-weight:400;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(30px,6vw,44px)} h2{font-size:26px}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+p{margin:0}.muted{color:var(--muted)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px}
+.hours{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.hour{padding:12px 10px;display:grid;gap:2px;font-size:13px;color:var(--ink)}
+.hour b{font-size:14px}
+.h1{background:var(--gold-soft)}.h2{background:var(--surface)}.h3{background:var(--accent-soft)}.h4{background:var(--bg)}
+.modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.mode{text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:14px;padding:16px;cursor:pointer;display:grid;gap:6px;font:inherit}
+.mode:hover{border-color:var(--accent)}
+.mode .t{font-weight:800;font-size:17px}
+.bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--good);border-radius:99px}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.btn{border:0;border-radius:10px;padding:11px 18px;font:700 16px var(--body);cursor:pointer;background:var(--accent);color:var(--surface)}
+.btn.ghost{background:var(--accent-soft);color:var(--accent)}
+.btn:focus-visible,.tab:focus-visible,.mode:focus-visible,.chip:focus-visible,.opt:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.pill{font-size:13px;font-weight:700;padding:4px 10px;border-radius:99px;background:var(--accent-soft);color:var(--accent);font-variant-numeric:tabular-nums}
+.q{font-size:20px;font-weight:600}
+.blank{display:inline-block;min-width:110px;border-bottom:3px solid var(--accent);text-align:center;padding:0 6px;color:var(--accent)}
+.blank.ok{color:var(--good);border-color:var(--good)}.blank.no{color:var(--bad);border-color:var(--bad)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:8px 14px;font:600 16px var(--body);cursor:pointer}
+.chip:disabled{cursor:default;opacity:.55}
+.chip.ok{background:var(--good-soft);border-color:var(--good);color:var(--good);opacity:1}
+.chip.no{background:var(--bad-soft);border-color:var(--bad);color:var(--bad);opacity:1}
+.opts{display:grid;gap:8px}
+.opt{text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:12px 14px;font:600 16px var(--body);cursor:pointer;display:flex;gap:10px}
+.opt .k{font-weight:800;color:var(--muted)}
+.opt.ok{background:var(--good-soft);border-color:var(--good)}.opt.no{background:var(--bad-soft);border-color:var(--bad)}
+.opt:disabled{cursor:default}
+.fb{border-radius:10px;padding:12px 14px}
+.fb.ok{background:var(--good-soft);color:var(--good)}.fb.no{background:var(--bad-soft);color:var(--bad)}
+.fb span{color:var(--ink);font-weight:400}
+textarea{width:100%;min-height:120px;border:1px solid var(--line);border-radius:10px;padding:12px;font:16px var(--body);background:var(--bg);color:var(--ink);resize:vertical}
+.sample{border-left:4px solid var(--gold);background:var(--gold-soft);padding:12px 14px;border-radius:0 10px 10px 0}
+.keys{display:flex;flex-wrap:wrap;gap:6px}
+.key{font-size:14px;font-weight:700;padding:4px 10px;border-radius:99px}
+.key.hit{background:var(--good-soft);color:var(--good)}.key.miss{background:var(--bad-soft);color:var(--bad)}
+.facts{display:grid;gap:10px}
+.fact{border-bottom:1px solid var(--line);padding-bottom:10px;display:grid;gap:2px}
+.fact:last-child{border:0;padding:0}
+.fact b{color:var(--accent)}
+.score{font-family:var(--display);font-size:56px;line-height:1;font-variant-numeric:tabular-nums}
+.speak{border:1px solid var(--line);background:var(--surface);color:var(--muted);border-radius:99px;padding:4px 10px;font:600 13px var(--body);cursor:pointer}
+@media (max-width:480px){.hours{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:no-preference){.panel{animation:in .25s ease}@keyframes in{from{transform:translateY(4px)}to{transform:none}}}
+.mlist{display:grid;gap:8px;counter-reset:none}
+.mdef{display:flex;gap:10px;padding:10px 12px;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.mdef .k{font-weight:800;color:var(--gold);min-width:18px}
+.mrow{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:10px}
+.mrow.ok{background:var(--good-soft);border-color:var(--good)}.mrow.no{background:var(--bad-soft);border-color:var(--bad)}
+.mrow .term{font-weight:700}
+.letters{display:flex;gap:6px;flex-wrap:wrap}
+.letter{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:800 16px var(--body);cursor:pointer}
+.letter[aria-pressed="true"]{background:var(--accent);color:var(--surface);border-color:var(--accent)}
+.letter:disabled{cursor:default}
+.letter:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+table.t{width:100%;border-collapse:collapse;font-size:15px}
+table.t th{text-align:left;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:2px solid var(--line)}
+table.t td{padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.t td:first-child{font-weight:700;color:var(--accent)}
+.works{display:grid;grid-template-columns:repeat(7,1fr);border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.work{padding:10px 6px;font-size:12.5px;font-weight:700;text-align:center;display:grid;gap:4px;align-content:start}
+.work span{font-size:22px}
+.work:nth-child(odd){background:var(--gold-soft)}.work:nth-child(even){background:var(--accent-soft)}
+@media (max-width:600px){.works{grid-template-columns:repeat(4,1fr)}table.t{font-size:14px}}
+</style>
+
+<nav class="tabs"><div class="tabs-in" id="tabs"></div></nav>
+<main id="app"></main>
+
+<nav class="tabs"><div class="tabs-in" id="tabs"></div></nav>
+<main id="app"></main>
+
+<script>
+// ---------- CONTENT: Christ Our Life Gr. 8, Ch. 5 "A People of Service" (pp. 39–48) ----------
+const BEATS=[
+ // [who, promise, meaning]
+ ["Blessed are the poor in spirit","for theirs is the kingdom of heaven.","They know they need God and depend on him, not on money or things. They are humble."],
+ ["Blessed are they who mourn","for they will be comforted.","They feel sorrow for sin and for the suffering of others. God comforts them in their sadness and loss."],
+ ["Blessed are the meek","for they will inherit the land.","They are gentle, patient, and self-controlled. They don't need to get their own way or use force."],
+ ["Blessed are they who hunger and thirst for righteousness","for they will be satisfied.","They deeply want to do what is right and work for justice for everyone."],
+ ["Blessed are the merciful","for they will be shown mercy.","They forgive others and show kindness and compassion to people in need."],
+ ["Blessed are the clean of heart","for they will see God.","They love God above all. Their thoughts and intentions are pure and honest."],
+ ["Blessed are the peacemakers","for they will be called children of God.","They work to bring peace, settle arguments, and help people get along."],
+ ["Blessed are they who are persecuted for the sake of righteousness","for theirs is the kingdom of heaven.","They stay faithful to Jesus and keep doing what is right, even when they are mocked or treated unfairly."]
+];
+const WORKS=[
+ // [work, example, second example, emoji]
+ ["Feed the hungry","Contribute to a food drive at your school or church.","Help serve meals at a soup kitchen.","🍞"],
+ ["Give drink to the thirsty","Donate cases of bottled water to a shelter or disaster relief.","Support a clean-water project, or bring water to people working outside.","💧"],
+ ["Clothe the naked","Donate clothes you have outgrown to the St. Vincent de Paul Society.","Give a coat to a winter coat drive.","🧥"],
+ ["Shelter the homeless","Volunteer to support a shelter for homeless women and children.","Help collect blankets or supplies for a shelter.","🏠"],
+ ["Visit the sick","Visit a friend who is at home with a broken leg.","Make cards for people in a hospital or nursing home.","🩹"],
+ ["Visit the imprisoned","Help a prison ministry prepare Christmas cards.","Pray for people in prison and their families.","🕊️"],
+ ["Bury the dead","Attend the funeral of a classmate's relative.","Pray for those who have died and comfort their families.","🕯️"]
+];
+const VOCAB=[
+ ["Witness","To express to others, by our words and our actions, the faith we have been given. Every Christian has the duty to witness to the Good News."],
+ ["Mission","The work of Jesus Christ that is continued in the Church under the guidance of the Holy Spirit."],
+ ["Vocation","The call each of us has in life to be the person God wants us to be, and the way we serve the Church and the Kingdom of God."],
+ ["Beatitudes","Eight teachings of Jesus from the Sermon on the Mount in Matthew's Gospel that show the way to true happiness."],
+ ["Corporal works of mercy","Kind acts by which we help our neighbors with their everyday material (bodily) needs."],
+ ["Spiritual works of mercy","Acts that help our neighbors with their non-material needs, like comforting, forgiving, and praying for them."],
+ ["Sermon on the Mount","Jesus' key teachings in Matthew chapters 5 to 7. It begins with the Beatitudes."],
+ ["Body of Christ","The Church: people gathered together in Christ, not a building of glass and stone."]
+];
+
+const FACTS=[
+ ["Faith Focus","Every baptized Catholic is called to share in the mission of Christ and his Church (p. 40)."],
+ ["Our mission (3 parts)","1) Share in the mission of Jesus and the Church. 2) Love and serve one another (God's people). 3) Build up the Body of Christ, and spread the Kingdom of God."],
+ ["The Body of Christ","Unlike a cathedral, the Body of Christ is not built of glass and stone but of people gathered together in Christ."],
+ ["Our gifts","Jesus united us with himself at Baptism and strengthened us with special gifts. The Holy Spirit gives us gifts to strengthen us. Everyone has gifts to share, and the Church needs you!"],
+ ["Sharing gifts","When we share our gifts in service, everyone benefits, the Kingdom of God becomes more visible, and the Church becomes more faithful to Christ's mission. We cannot be faithful to the mission without sharing our gifts."],
+ ["The sacraments","Through the sacraments, Jesus continues to bless, nourish, forgive, strengthen, and heal us."],
+ ["Vocation","The call each of us has to be the person God wants us to be. Vocations include priest, deacon, religious brother or sister, married life, and single life (p. 41)."],
+ ["Witness","To pass on the faith we have been given to others by our words and actions. Every Christian has the duty to give witness to the Good News about Jesus Christ."],
+ ["Two job descriptions (Matthew)","1) The Beatitudes: Jesus' teachings in the Sermon on the Mount that show how to live as his follower and work for the Kingdom of God, leading to true happiness. 2) The Corporal Works of Mercy: kind acts that meet people's everyday physical and material needs: feeding the hungry, giving drink to the thirsty, clothing the naked, sheltering the homeless, visiting the sick and imprisoned, and burying the dead."],
+ ["How Jesus sees our actions","“Whatever you did for one of these least brothers of mine, you did for me.” (Matthew 25:40) When we help someone in need, we are helping Jesus himself."],
+ ["The Beatitudes (p. 42)","Eight ways of living the Christian life, from Matthew's Gospel. They show the way to true happiness and fulfill the commandments given to Moses."],
+ ["Corporal works of mercy (p. 298)","Kind acts that help our neighbors with their everyday material needs. We should treat all people as we would like to be treated."],
+ ["Any age!","Someone your age CAN practice the corporal works of mercy, like donating to a food drive or visiting a sick friend."],
+ ["Also good to know","Giving alms (money) to the poor, like giving to Catholic Relief Services, is also a work of mercy."]
+];
+
+const FILL=[
+ ["Every baptized Catholic is called to share in the ___ of Christ and his Church.","mission"],
+ ["As Christians, we are called to love and ___ one another.","serve"],
+ ["Christians are called to build up the ___ of Christ.","Body"],
+ ["Unlike a cathedral, the Body of Christ is built not of glass and stone but of ___.","people"],
+ ["A ___ is the call each of us has in life to be the person God wants us to be.","vocation"],
+ ["To ___ is to share with others, by our words and actions, the faith we have been given.","witness"],
+ ["The Beatitudes are teachings of Jesus from ___'s Gospel.","Matthew"],
+ ["The Beatitudes are ___ ways of living the Christian life.","eight"],
+ ["The Beatitudes present the way to true ___.","happiness"],
+ ["The Beatitudes are part of Jesus' Sermon on the ___.","Mount"],
+ ["The ___ works of mercy are kind acts by which we help our neighbors with their everyday material needs.","corporal"],
+ ["“Whatever you did for one of these least brothers of mine, you did for ___.”","me"],
+ ["“Whatever you did for one of these least brothers of mine, you did for me” is found in Matthew ___.","25:40"],
+ ["Blessed are the poor in spirit, for theirs is the ___ of heaven.","kingdom"],
+ ["Blessed are they who mourn, for they will be ___.","comforted"],
+ ["Blessed are the meek, for they will ___ the land.","inherit"],
+ ["Blessed are they who hunger and thirst for righteousness, for they will be ___.","satisfied"],
+ ["Blessed are the ___, for they will be shown mercy.","merciful"],
+ ["Blessed are the clean of heart, for they will ___ God.","see"],
+ ["Blessed are the ___, for they will be called children of God.","peacemakers"],
+ ["Blessed are they who are ___ for the sake of righteousness, for theirs is the kingdom of heaven.","persecuted"],
+ ["Donating clothes you've outgrown to the St. Vincent de Paul Society is a way to ___ the naked.","clothe"],
+ ["Helping a prison ministry prepare Christmas cards is a way to visit the ___.","imprisoned"],
+ ["Attending the funeral of a classmate's relative is a way to ___ the dead.","bury"],
+ ["The two job descriptions for a Christian are the Beatitudes and the ___ Works of Mercy.","Corporal"],
+ ["The ___ gives us special gifts to strengthen us.","Holy Spirit"],
+ ["Through the ___, Jesus continues to bless, nourish, forgive, strengthen, and heal us.","sacraments"],
+ ["When we share our gifts, the Kingdom of God becomes more ___.","visible"]
+];
+
+const TF=["True","False"];
+const MC=[
+ ["What mission is every Christian called to?",["To become a priest or religious sister","To share in the mission of Jesus and the Church, love and serve one another, and build up the Body of Christ","To go to Mass only on holidays","To build beautiful cathedrals"],1,"All three parts: share in the mission, love and serve one another, build up the Body of Christ."],
+ ["What are the two “job descriptions” for a Christian found in Matthew's Gospel?",["The Ten Commandments and the Creed","The Lord's Prayer and the Hail Mary","The Beatitudes and the Corporal Works of Mercy","The seven sacraments and the Rosary"],2,"The Beatitudes show how to live as Jesus' follower; the Corporal Works of Mercy meet people's physical and material needs."],
+ ["According to Matthew 25:40, how does Jesus view our actions toward others?",["He only cares about what we do in church","Whatever we do for the least of his brothers and sisters, we do for him","Actions don't matter, only prayers do","He only notices big, famous acts"],1,"“Whatever you did for one of these least brothers of mine, you did for me.”"],
+ ["Passing on the faith to others by our words and actions is called…",["prophet","witness","judge","martyr"],1,"Every Christian has the duty to give witness to the Good News."],
+ ["Kind acts by which we help our neighbors with their everyday material needs are the…",["Works of charity","Spiritual works of mercy","Earthly works of mercy","Corporal works of mercy"],3,"Corporal means “of the body”: food, drink, clothes, shelter, visits, burial."],
+ ["The teaching of Jesus in the Sermon on the Mount: eight ways of living the Christian life that lead to true happiness.",["Beatitudes","Sacramentals","Sacraments","Miracles"],0,"The Beatitudes, Matthew 5:3–10."],
+ ["What did Jesus promise to those who live out the Beatitudes?",["A long life and freedom from all suffering","Wealth, fame, and power","Success in business and a comfortable home","The kingdom of heaven, comfort, inheritance, satisfaction, mercy, to see God, to be called children of God"],3,"Those are the eight promises."],
+ ["Which is an example of “Feed the hungry”?",["Cook dinner for your immediate family","Eat a large meal before church","Fast to save money","Contribute to a food drive at your school or church"],3,"Helping people in need get food."],
+ ["Which is an example of “Clothe the naked”?",["Buy new clothes for school","Donate clothes you've outgrown to the St. Vincent de Paul Society","Throw away torn clothes","Wear your favorite outfit to a party"],1,"Giving clothing to people who need it."],
+ ["Which is an example of “Visit the imprisoned”?",["Avoid anyone who has broken the law","Watch a prison-break movie","Read about the legal system","Help a prison ministry prepare Christmas cards"],3,"Reaching out to people in prison."],
+ ["Which is an example of “Shelter the homeless”?",["Stay in a hotel on vacation","Volunteer to support a shelter for homeless women and children","Build a treehouse","Have a friend sleep over"],1,"Helping people without a home."],
+ ["Which is an example of “Bury the dead”?",["Avoid thinking about death","Attend the funeral of a classmate's relative","Take pictures of old cemetery statues","Watch a ghost movie"],1,"Honoring the dead and comforting their families."],
+ ["Which is an example of “Visit the sick”?",["Visit a friend who is at home with a broken leg","Stay away from sick people","Watch a hospital TV show","Buy yourself vitamins"],0,"Spending time with someone who is ill or injured."],
+ ["Which is an example of giving alms to the poor?",["Buy yourself new shoes","Save for a video game","Give money to Catholic Relief Services, which fights poverty","Invest in the stock market"],2,"Alms are money or goods given to the poor."],
+ ["Complete the Beatitude: “Blessed are the meek, for they will…”",["see God","inherit the land","be comforted","be shown mercy"],1,"The meek will inherit the land."],
+ ["Complete the Beatitude: “Blessed are the clean of heart, for they will…”",["see God","be satisfied","inherit the land","be called children of God"],0,"The clean of heart will see God."],
+ ["Which Beatitude is about people who work to settle arguments and help others get along?",["The meek","The merciful","The peacemakers","The poor in spirit"],2,"Peacemakers will be called children of God."],
+ ["To be “poor in spirit” means…",["to have no money","to know we need God and depend on him","to be sad all the time","to never pray"],1,"It is about humility and depending on God."],
+ ["True or False: Church members can be faithful to Christ's mission without sharing their gifts.",TF,1,"False. We need to share our gifts to be faithful to the mission."],
+ ["True or False: Everyone has special gifts to share with the Church.",TF,0,"True. Every person has gifts from God."],
+ ["True or False: The Beatitudes teach us that we are all called to work for God's kingdom.",TF,0,"True."],
+ ["True or False: The followers of Jesus build up the Church through the corporal works of mercy.",TF,0,"True."],
+ ["True or False: The Holy Spirit gives us special gifts to strengthen us.",TF,0,"True."],
+ ["True or False: The Church needs you.",TF,0,"True!"],
+ ["True or False: Someone your age cannot yet practice the corporal works of mercy.",TF,1,"False. You can practice them now, like donating to a food drive."],
+ ["How many corporal works of mercy are there?",["Five","Seven","Eight","Ten"],1,"Seven. (There are eight Beatitudes.)"]
+];
+
+// Matching sets: [title, instructions, pairs[[left,right]]]
+const MATCH=[
+ ["Beatitudes → Promises","Match each Beatitude to its promise.",BEATS.map(b=>[b[0],b[1]])],
+ ["Beatitudes → What they mean","Match each Beatitude to what it means.",BEATS.map(b=>[b[0].replace("Blessed are ",""),b[2]])],
+ ["Corporal Works → Examples","Match each corporal work of mercy to an example.",WORKS.map(w=>[w[0],w[1]])],
+ ["Vocabulary","Match each word to its meaning.",VOCAB]
+];
+
+const SA=[
+ {t:1,q:"What mission is every Christian called to?",a:"Every baptized Christian is called to share in the mission of Jesus and the Church. We do this by loving and serving one another and by building up the Body of Christ, which helps spread the Kingdom of God.",k:[["share","mission"],["love"],["serve"],["body of christ","build"]]},
+ {t:1,q:"What are the two job descriptions for a Christian found in Matthew's Gospel?",a:"The first is the Beatitudes: Jesus' teachings in the Sermon on the Mount that show how to live as his follower and work for the Kingdom of God, leading to true happiness. The second is the Corporal Works of Mercy: kind acts that meet people's everyday physical and material needs, such as feeding the hungry, giving drink to the thirsty, clothing the naked, sheltering the homeless, visiting the sick and imprisoned, and burying the dead.",k:[["beatitudes"],["sermon on the mount","happiness","kingdom"],["corporal works of mercy","corporal","works of mercy"],["needs","physical","material","hungry"]]},
+ {t:1,q:"How does Jesus view our actions towards others? Use Scripture in your answer.",a:"Jesus sees what we do for others as done for him. In Matthew 25:40 he says, “Whatever you did for one of these least brothers of mine, you did for me.” When we help someone in need, we are serving Jesus.",k:[["whatever you did"],["least"],["for me","jesus himself","to jesus","for jesus","serving jesus"],["25:40","matthew 25"]]},
+ {t:1,q:"What does it mean to be a witness? Give an example.",a:"To be a witness means to share the faith we have been given with others through our words and our actions. Every Christian has the duty to witness to the Good News about Jesus. For example, I can be a witness by being kind to a new student or by inviting a friend to a youth group.",k:[["words"],["actions"],["faith","good news"],["example","for example","like","by"]]},
+ {q:"Name the seven corporal works of mercy.",a:"Feed the hungry, give drink to the thirsty, clothe the naked, shelter the homeless, visit the sick, visit the imprisoned, and bury the dead.",k:[["hungry"],["thirsty"],["clothe","naked"],["homeless","shelter"],["sick"],["imprisoned","prison"],["bury","dead"]]},
+ {q:"Choose two corporal works of mercy and give a real example of how you could do each one.",a:"Feed the hungry: I can bring cans to my school or parish food drive. Visit the sick: I can visit or call a friend who is home with a broken leg, or make cards for a nursing home.",k:[["feed","drink","clothe","shelter","visit","bury"],["can","could","donate","help","volunteer"]]},
+ {q:"Name the eight Beatitudes.",a:"Blessed are the poor in spirit, they who mourn, the meek, they who hunger and thirst for righteousness, the merciful, the clean of heart, the peacemakers, and they who are persecuted for the sake of righteousness.",k:[["poor in spirit"],["mourn"],["meek"],["hunger","thirst"],["merciful"],["clean of heart","pure"],["peacemakers"],["persecuted"]]},
+ {q:"Choose two Beatitudes and explain what each one means.",a:"Blessed are the merciful, for they will be shown mercy: this means forgiving others and showing compassion. Blessed are the peacemakers, for they will be called children of God: this means working to bring peace and help people get along.",k:[["blessed"],["means","mean"],["poor","mourn","meek","righteousness","merciful","clean","peacemakers","persecuted"]]},
+ {q:"Why is sharing our gifts important to the mission of the Church?",a:"The Holy Spirit gives each of us special gifts. When we share our gifts in service, everyone benefits, the Kingdom of God becomes more visible, and the Church becomes more faithful to Christ's mission. We can't be faithful to the mission without sharing our gifts.",k:[["gifts"],["holy spirit","god"],["kingdom","visible"],["mission","faithful","church"]]},
+ {q:"What is a vocation? Name some vocations.",a:"A vocation is the call each of us has in life to be the person God wants us to be and the way we serve the Church and the Kingdom of God. Vocations include priest, deacon, religious brother or sister, married life, and single life.",k:[["call"],["god wants","person god"],["priest","deacon","religious","married","single"]]}
+];
+
+// ---------- STORAGE ----------
+const KEY="col-g8-ch5-progress";
+let P={fill:{},mc:{},sa:{},match:{}};
+try{const s=localStorage.getItem(KEY); if(s) P=Object.assign(P,JSON.parse(s));}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(P));}catch(e){}}
+function mark(sec,i,ok){P[sec][i]=ok?1:0;save();}
+function mastered(sec,n){let c=0;for(let i=0;i<n;i++)if(P[sec][i]===1)c++;return c;}
+const MATCH_KEYS=MATCH.flatMap((m,g)=>m[2].map((_,i)=>g+"-"+i));
+function matchMastered(){return MATCH_KEYS.filter(k=>P.match[k]===1).length;}
+
+// ---------- HELPERS ----------
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+function pickOrder(sec,n,size){
+  const idx=shuffle([...Array(n).keys()]);
+  const score=i=>P[sec][i]===0?0:P[sec][i]===undefined?1:2;
+  idx.sort((a,b)=>score(a)-score(b));
+  return size?idx.slice(0,size):idx;
+}
+function speak(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.replace(/___/g,"blank"));u.rate=.95;speechSynthesis.speak(u);}catch(e){}}
+const speakBtn=t=>`<button class="speak" data-say="${esc(t)}" aria-label="Read aloud">\u{1F50A} Read aloud</button>`;
+document.addEventListener("click",e=>{const b=e.target.closest("[data-say]");if(b)speak(b.dataset.say);});
+const ANSWERS=[...new Set(FILL.map(f=>f[1]))];
+const fillBank=ans=>shuffle([ans,...shuffle(ANSWERS.filter(a=>a!==ans)).slice(0,4)]);
+
+// ---------- NAV ----------
+const VIEWS=[["home","Home"],["learn","Key Facts"],["fill","Fill in the Blank"],["mc","Multiple Choice"],["match","Matching"],["sa","Short Answer"],["test","Practice Test"]];
+let view="home", full=false;
+function nav(v){view=v;try{speechSynthesis.cancel();}catch(e){}renderTabs();
+  ({home:home,learn:learn,fill:()=>startFill(),mc:()=>startMC(),match:()=>startMatch(),sa:()=>startSA(),test:startTest})[v]();
+  window.scrollTo(0,0);}
+function renderTabs(){$("#tabs").innerHTML=`<a class="tab" href="./" style="text-decoration:none">← Study Central</a>`+VIEWS.map(([k,l])=>`<button class="tab" aria-current="${k===view}" onclick="nav('${k}')">${l}</button>`).join("");}
+
+// ---------- HOME ----------
+function home(){
+  const m=(s,n)=>Math.round(mastered(s,n)/n*100);
+  $("#app").innerHTML=`
+  <header style="display:grid;gap:8px">
+    <span class="eyebrow">Christ Our Life · Grade 8 · Chapter 5 · Test Friday 11/20</span>
+    <h1>A People of Service</h1>
+    <p class="muted">Every baptized Catholic is called to share in the mission of Christ and his Church: to love and serve God's people and build up the Body of Christ.</p>
+  </header>
+  <section class="works" aria-label="The seven corporal works of mercy">
+    ${WORKS.map(w=>`<div class="work"><span aria-hidden="true">${w[3]}</span>${w[0]}</div>`).join("")}
+  </section>
+  <section class="modes">
+    ${modeCard("learn","Key Facts","Big ideas, the 8 Beatitudes, and the 7 corporal works.",null)}
+    ${modeCard("fill","Fill in the Blank",`${FILL.length} sentences with a word bank`,m("fill",FILL.length))}
+    ${modeCard("mc","Multiple Choice",`${MC.length} questions, including true/false`,m("mc",MC.length))}
+    ${modeCard("match","Matching",`${MATCH.length} sets: Beatitudes, works of mercy, vocabulary`,Math.round(matchMastered()/MATCH_KEYS.length*100))}
+    ${modeCard("sa","Short Answer",`${SA.length} written questions`,m("sa",SA.length))}
+    ${modeCard("test","Practice Test","Like the real test: fill-in, multiple choice, matching, and the 4 “Need to Know” short answers",null)}
+  </section>
+  <div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <label class="row" style="gap:8px;font-weight:600"><input type="checkbox" id="full" ${full?"checked":""} onchange="full=this.checked"> Full review (every question, not just 8)</label>
+      <button class="btn ghost" onclick="resetP()">Reset progress</button>
+    </div>
+    <p class="muted" style="font-size:14px">Rounds show the questions you missed first. Progress is saved on this device.</p>
+  </div>`;
+}
+function modeCard(k,t,d,pct){return `<button class="mode" onclick="nav('${k}')"><span class="t">${t}</span><span class="muted" style="font-size:14px">${d}</span>${pct===null?"":`<div class="bar" aria-label="${pct}% mastered"><i style="width:${pct}%"></i></div><span style="font-size:13px;font-weight:700;color:var(--good)">${pct}% mastered</span>`}</button>`;}
+function resetP(){P={fill:{},mc:{},sa:{},match:{}};save();home();}
+
+// ---------- LEARN ----------
+function learn(){
+  $("#app").innerHTML=`<header style="display:grid;gap:6px"><span class="eyebrow">Read first</span><h2>Key Facts</h2></header>
+  <div class="panel facts">${FACTS.map(([t,d])=>`<div class="fact"><b>${t}</b><span>${d}</span></div>`).join("")}</div>
+  <header style="display:grid;gap:6px"><span class="eyebrow">Page 42 · Matthew 5:3–10</span><h2>The Eight Beatitudes</h2></header>
+  <div class="panel"><table class="t"><thead><tr><th>Beatitude</th><th>Promise</th><th>What it means</th></tr></thead><tbody>
+   ${BEATS.map((b,i)=>`<tr><td>${i+1}. ${b[0]}</td><td>${b[1]}</td><td>${b[2]}</td></tr>`).join("")}</tbody></table>
+   <div>${speakBtn(BEATS.map(b=>b[0]+", "+b[1]).join(" "))}</div></div>
+  <header style="display:grid;gap:6px"><span class="eyebrow">Page 298 · Matthew 25:31–46</span><h2>The Seven Corporal Works of Mercy</h2></header>
+  <div class="panel"><table class="t"><thead><tr><th>Work of mercy</th><th>Examples</th></tr></thead><tbody>
+   ${WORKS.map(w=>`<tr><td>${w[3]} ${w[0]}</td><td>${w[1]}<br><span class="muted">${w[2]}</span></td></tr>`).join("")}</tbody></table>
+   <p class="sample">“Whatever you did for one of these least brothers of mine, you did for me.” (Matthew 25:40)</p></div>
+  <header style="display:grid;gap:6px"><span class="eyebrow">Glossary</span><h2>Words to Know</h2></header>
+  <div class="panel facts">${VOCAB.map(([t,d])=>`<div class="fact"><b>${t}</b><span>${d}</span></div>`).join("")}</div>
+  <div class="row"><button class="btn" onclick="nav('fill')">Start Fill in the Blank</button></div>`;
+}
+
+// ---------- ROUND ENGINE ----------
+let R=null; // {items, pos, score, total, title}
+function startRound(items,title){R={items,pos:0,score:0,total:0,title};step();}
+function startFill(){startRound(pickOrder("fill",FILL.length,full?0:8).map(i=>({type:"fill",i})),"Fill in the Blank");}
+function startMC(){startRound(pickOrder("mc",MC.length,full?0:8).map(i=>({type:"mc",i})),"Multiple Choice");}
+function startSA(){startRound(pickOrder("sa",SA.length,full?0:3).map(i=>({type:"sa",i})),"Short Answer");}
+function matchItem(g,size){ // weakest pairs of set g first
+  const pairs=MATCH[g][2];const idx=shuffle([...pairs.keys()]);
+  const sc=i=>{const v=P.match[g+"-"+i];return v===0?0:v===undefined?1:2;};
+  idx.sort((a,b)=>sc(a)-sc(b));
+  return {type:"match",g,ids:size?idx.slice(0,size):idx};
+}
+function startMatch(){
+  const order=shuffle([...MATCH.keys()]);
+  startRound(order.map(g=>matchItem(g,full?0:5)),"Matching");
+}
+function startTest(){
+  const g=shuffle([0,1,2]);
+  startRound([
+  ...pickOrder("fill",FILL.length,6).map(i=>({type:"fill",i})),
+  ...pickOrder("mc",MC.length,6).map(i=>({type:"mc",i})),
+  matchItem(g[0],5), matchItem(3,5),
+  ...SA.map((x,i)=>x.t?i:-1).filter(i=>i>=0).map(i=>({type:"sa",i}))],"Practice Test");}
+
+function head(){const it=R.items[R.pos];const sec={fill:"Fill in the blank",mc:"Multiple choice",match:"Matching",sa:"Short answer"}[it.type];
+  return `<div class="row" style="justify-content:space-between"><span class="eyebrow">${R.title===sec?sec:R.title+" · "+sec}</span><span class="pill">${R.pos+1} / ${R.items.length} · Score ${R.score}/${R.total}</span></div>
+  <div class="bar"><i style="width:${R.pos/R.items.length*100}%;background:var(--accent)"></i></div>`;}
+function nextBtn(){return `<div class="row"><button class="btn" id="nextb" onclick="R.pos++;step()">${R.pos+1<R.items.length?"Next":"See results"}</button></div>`;}
+function step(){
+  if(R.pos>=R.items.length) return results();
+  const it=R.items[R.pos];
+  if(it.type==="match") return showMatch(it);
+  ({fill:showFill,mc:showMC,sa:showSA})[it.type](it.i);
+}
+
+function showFill(i){
+  const [s,a]=FILL[i];const parts=s.split("___");
+  $("#app").innerHTML=`<div class="panel">${head()}
+   <p class="q">${esc(parts[0])}<span class="blank" id="blank">&nbsp;</span>${esc(parts[1])}</p>
+   <div>${speakBtn(s)}</div>
+   <p class="muted" style="font-size:14px;font-weight:700">Word bank</p>
+   <div class="chips" id="chips">${fillBank(a).map(w=>`<button class="chip" data-w="${esc(w)}">${esc(w)}</button>`).join("")}</div>
+   <div id="fb"></div><div id="nx"></div></div>`;
+  $("#chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;const w=c.dataset.w,ok=w===a;
+    document.querySelectorAll(".chip").forEach(x=>{x.disabled=true;if(x.dataset.w===a)x.classList.add("ok");});
+    if(!ok)c.classList.add("no");
+    const b=$("#blank");b.textContent=a;b.className="blank "+(ok?"ok":"no");
+    R.total++;if(ok)R.score++;mark("fill",i,ok);
+    $("#fb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"Correct!":"Not quite."}</b> ${ok?"":`<span>The answer is <b>${esc(a)}</b>.</span>`}</div>`;
+    $("#nx").innerHTML=nextBtn();$("#nextb").focus();};
+}
+
+function showMC(i){
+  const [q,opts,ans,ex]=MC[i];const order=opts===TF?[0,1]:shuffle(opts.map((o,k)=>k));
+  $("#app").innerHTML=`<div class="panel">${head()}
+   <p class="q">${esc(q)}</p><div>${speakBtn(q)}</div>
+   <div class="opts" id="opts">${order.map((k,n)=>`<button class="opt" data-k="${k}"><span class="k">${"ABCD"[n]}</span><span>${esc(opts[k])}</span></button>`).join("")}</div>
+   <div id="fb"></div><div id="nx"></div></div>`;
+  $("#opts").onclick=e=>{const b=e.target.closest(".opt");if(!b)return;const ok=+b.dataset.k===ans;
+    document.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.k===ans)x.classList.add("ok");});
+    if(!ok)b.classList.add("no");R.total++;if(ok)R.score++;mark("mc",i,ok);
+    $("#fb").innerHTML=`<div class="fb ${ok?"ok":"no"}"><b>${ok?"Correct!":"Not quite."}</b> <span>${esc(ex)}</span></div>`;
+    $("#nx").innerHTML=nextBtn();$("#nextb").focus();};
+}
+
+function showMatch(it){
+  const [title,instr,pairs]=MATCH[it.g];
+  const defs=shuffle(it.ids); // lettered right column
+  const L="ABCDEFGH";
+  const pick={};
+  $("#app").innerHTML=`<div class="panel">${head()}
+   <p class="q">${esc(title)}</p><p class="muted">${esc(instr)} Tap the letter of the matching answer.</p>
+   <div class="mlist">${defs.map((id,n)=>`<div class="mdef"><span class="k">${L[n]}</span><span>${esc(pairs[id][1])}</span></div>`).join("")}</div>
+   <div class="mlist" id="rows">${it.ids.map(id=>`<div class="mrow" data-id="${id}"><span class="term">${esc(pairs[id][0])}</span>
+     <div class="letters">${defs.map((_,n)=>`<button class="letter" data-id="${id}" data-n="${n}" aria-pressed="false" aria-label="${L[n]}">${L[n]}</button>`).join("")}</div><div class="fbm"></div></div>`).join("")}</div>
+   <div class="row"><button class="btn" id="chk">Check matches</button></div>
+   <div id="fb"></div><div id="nx"></div></div>`;
+  $("#rows").onclick=e=>{const b=e.target.closest(".letter");if(!b||b.disabled)return;const id=b.dataset.id;
+    pick[id]=+b.dataset.n;document.querySelectorAll(`.letter[data-id="${id}"]`).forEach(x=>x.setAttribute("aria-pressed",x===b?"true":"false"));};
+  $("#chk").onclick=()=>{
+    if(Object.keys(pick).length<it.ids.length){$("#fb").innerHTML=`<div class="fb no"><b>Pick a letter for every item first.</b></div>`;return;}
+    let right=0;
+    it.ids.forEach(id=>{const ok=defs[pick[id]]===id;if(ok)right++;
+      P.match[it.g+"-"+id]=ok?1:0;
+      const row=document.querySelector(`.mrow[data-id="${id}"]`);row.classList.add(ok?"ok":"no");
+      row.querySelector(".fbm").innerHTML=ok?"":`<span style="font-size:14px">Correct: <b>${L[defs.indexOf(id)]}</b>. ${esc(pairs[id][1])}</span>`;});
+    save();document.querySelectorAll(".letter").forEach(x=>x.disabled=true);$("#chk").disabled=true;
+    R.total+=it.ids.length;R.score+=right;
+    $("#fb").innerHTML=`<div class="fb ${right===it.ids.length?"ok":"no"}"><b>${right} of ${it.ids.length} correct.</b></div>`;
+    $("#nx").innerHTML=nextBtn();$("#nextb").focus();};
+}
+
+function showSA(i){
+  const s=SA[i];
+  $("#app").innerHTML=`<div class="panel">${head()}
+   ${s.t?'<span class="pill" style="justify-self:start;background:var(--gold-soft);color:var(--gold)">Need to Know</span>':""}<p class="q">${esc(s.q)}</p><div>${speakBtn(s.q)}</div>
+   <label for="ans" class="muted" style="font-size:14px">Write your answer in 2–3 complete sentences.</label>
+   <textarea id="ans" placeholder="Type your answer here…"></textarea>
+   <div class="row"><button class="btn" id="chk">Check my answer</button></div>
+   <div id="fb"></div></div>`;
+  $("#chk").onclick=()=>{
+    const t=$("#ans").value.toLowerCase().replace(/[’]/g,"'");
+    const res=s.k.map(g=>({label:g[0],hit:g.some(w=>t.includes(w))}));
+    const hits=res.filter(r=>r.hit).length;
+    $("#chk").disabled=true;
+    $("#fb").innerHTML=`
+     <div style="display:grid;gap:6px"><b>Key ideas you included (${hits}/${res.length})</b>
+     <div class="keys">${res.map(r=>`<span class="key ${r.hit?"hit":"miss"}">${r.hit?"✓":"✗"} ${esc(r.label)}</span>`).join("")}</div></div>
+     <div class="sample"><b>Sample answer</b><br>${esc(s.a)} ${speakBtn(s.a)}</div>
+     <p style="font-weight:700">Compare with the sample. Did you get it?</p>
+     <div class="row"><button class="btn" onclick="saGrade(${i},true)">Yes, I got it</button><button class="btn ghost" onclick="saGrade(${i},false)">Need more practice</button></div>`;
+  };
+}
+function saGrade(i,ok){R.total++;if(ok)R.score++;mark("sa",i,ok);R.pos++;step();}
+
+function results(){
+  const n=R.total||1,pct=Math.round(R.score/n*100);
+  const msg=pct>=90?"Excellent! You're ready.":pct>=75?"Strong work. Review the ones you missed.":pct>=50?"Good start. Go over Key Facts and try again.":"Keep going. Read Key Facts, then practice again.";
+  $("#app").innerHTML=`<div class="panel" style="text-align:center;justify-items:center">
+   <span class="eyebrow">${R.title} complete</span>
+   <div class="score">${R.score} / ${R.total}</div><p class="q">${pct}%</p><p class="muted">${msg}</p>
+   <div class="row" style="justify-content:center"><button class="btn" onclick="nav('${view}')">Try again</button><button class="btn ghost" onclick="nav('home')">Home</button></div></div>`;
+}
+
+nav("home");
+</script>
