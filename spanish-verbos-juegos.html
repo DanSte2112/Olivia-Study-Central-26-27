@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Verbos Arcade 🎮</title>
+<style>
+:root{--bg:#1d1640;--bg2:#2a2060;--card:#ffffff;--ink:#1f1a3d;--muted:#6b6690;--pink:#ff4f9a;--yellow:#ffd23f;--teal:#1ec9b7;--blue:#4f7bff;--purple:#8b5cf6;--good:#16a34a;--bad:#e11d48;--line:#e7e4f5;--ar:#ff8a3d;--er:#4f7bff;--ir:#1ec9b7}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Avenir Next","Nunito",ui-rounded,system-ui,-apple-system,"Segoe UI",sans-serif;background:radial-gradient(circle at 20% 0%,#3b2a8a 0,transparent 45%),radial-gradient(circle at 90% 20%,#5b2163 0,transparent 40%),var(--bg);color:#fff;min-height:100vh;line-height:1.45}
+a{color:inherit}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;max-width:960px;margin:0 auto;padding:14px 16px;flex-wrap:wrap}
+.top a{text-decoration:none;font-weight:700;opacity:.85}
+.stars{background:rgba(255,255,255,.12);padding:6px 14px;border-radius:99px;font-weight:800}
+main{max-width:960px;margin:0 auto;padding:0 16px 60px}
+h1{font-size:clamp(30px,6vw,48px);margin:6px 0 4px;line-height:1.05}
+h2{font-size:26px;margin:0 0 6px}
+.sub{color:#cfc8ff;margin:0 0 18px}
+.card{background:var(--card);color:var(--ink);border-radius:22px;padding:clamp(16px,4vw,26px);box-shadow:0 12px 40px rgba(0,0,0,.25);display:grid;gap:14px}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.lvl{border:0;border-radius:18px;padding:16px;text-align:left;cursor:pointer;color:#fff;display:grid;gap:4px;font:inherit;box-shadow:0 6px 0 rgba(0,0,0,.25);transition:transform .1s}
+.lvl:hover{transform:translateY(-2px)}.lvl:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.lvl .n{font-size:13px;font-weight:800;letter-spacing:.1em;opacity:.85}.lvl .t{font-size:20px;font-weight:800}.lvl .d{font-size:14px;opacity:.92}.lvl .s{font-size:18px}
+.tip{background:#fff6d6;border:2px dashed #f2c94c;border-radius:14px;padding:12px 14px;color:#5b4a00}
+.tip b{color:#3d3200}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{border:0;border-radius:14px;padding:12px 18px;font:800 17px inherit;font-family:inherit;cursor:pointer;background:var(--purple);color:#fff;box-shadow:0 4px 0 #5b3bb0}
+.btn:active{transform:translateY(2px);box-shadow:0 2px 0 #5b3bb0}
+.btn.ghost{background:#efeafe;color:#4c2fa0;box-shadow:0 4px 0 #d2c8f5}
+.btn:disabled{opacity:.5;cursor:default}
+.hud{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-weight:800;color:var(--muted)}
+.combo{color:var(--pink)}
+.bar{height:10px;border-radius:99px;background:#eee9fb;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--teal),var(--purple));transition:width .3s}
+.big{font-size:clamp(26px,6vw,40px);font-weight:900;text-align:center;letter-spacing:.01em}
+.pr{color:var(--purple)}
+.vt{font-weight:900;padding:0 4px;border-radius:6px}
+.t-ar{color:var(--ar)}.t-er{color:var(--er)}.t-ir{color:var(--ir)}
+.bubbles{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;max-width:420px;margin:0 auto;width:100%}
+.bub{aspect-ratio:1.6;border-radius:999px;border:0;font:900 26px inherit;font-family:inherit;color:#fff;cursor:pointer;animation:bob 2.4s ease-in-out infinite;box-shadow:inset 0 -6px 0 rgba(0,0,0,.15),0 6px 16px rgba(0,0,0,.15)}
+.bub:nth-child(2){animation-delay:.3s}.bub:nth-child(3){animation-delay:.6s}.bub:nth-child(4){animation-delay:.9s}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.bub.pop{animation:pop .35s forwards}@keyframes pop{to{transform:scale(1.4);opacity:0}}
+.bub.no{animation:shake .4s;background:#bbb!important}@keyframes shake{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.letters{display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.let{width:46px;height:56px;border-radius:12px;border:2px solid var(--line);background:#faf9ff;font:900 26px inherit;font-family:inherit;color:var(--ink);cursor:pointer}
+.let.cut{border-left:4px solid var(--pink)}.let.gone{opacity:.25;text-decoration:line-through}.let.stem{background:#e9fbef;border-color:var(--good)}
+.mem{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media (max-width:560px){.mem{grid-template-columns:repeat(3,1fr)}}
+.mc{aspect-ratio:1;border-radius:14px;border:0;cursor:pointer;font:800 15px inherit;font-family:inherit;padding:6px;color:#fff;background:linear-gradient(135deg,var(--purple),var(--pink));display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.2}
+.mc.up{background:#fff;color:var(--ink);border:3px solid var(--purple)}.mc.done{background:#e9fbef;color:var(--good);border:3px solid var(--good);cursor:default}
+.mc .es{font-size:20px}
+.tiles{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.tile{border:0;border-radius:12px;padding:12px 16px;font:900 22px inherit;font-family:inherit;cursor:pointer;background:#f1edff;color:var(--ink);box-shadow:0 4px 0 #d9d1f7}
+.tile.sel{background:var(--yellow);box-shadow:0 4px 0 #c9a21d}.tile.end{background:#ffe3ef;box-shadow:0 4px 0 #f5b8d0}
+.slot{display:inline-block;min-width:150px;min-height:48px;border-bottom:4px solid var(--purple);font:900 30px inherit;font-family:inherit;color:var(--purple);text-align:center;padding:0 8px}
+.ptab{width:100%;border-collapse:collapse}.ptab td{padding:6px;border-bottom:1px solid var(--line)}.ptab td:first-child{font-weight:800;color:var(--purple);width:34%}
+.cell{width:100%;min-height:44px;border:2px dashed #cfc6f3;border-radius:10px;background:#faf9ff;font:800 18px inherit;font-family:inherit;color:var(--ink);cursor:pointer}
+.cell.f{border-style:solid;border-color:var(--purple)}.cell.ok{background:#e9fbef;border-color:var(--good)}.cell.no{background:#ffe8ee;border-color:var(--bad)}
+.sent{font-size:22px;font-weight:700;text-align:center}
+.sent u{text-decoration:none;border-bottom:4px solid var(--pink);padding:0 4px}
+.fb{border-radius:14px;padding:12px 14px;font-weight:700}.fb.ok{background:#e9fbef;color:#126c33}.fb.no{background:#ffe8ee;color:#a1122f}.fb span{font-weight:500;color:var(--ink)}
+.timer{font:900 34px inherit;font-family:inherit;color:var(--pink);text-align:center}
+.inp{font:800 24px inherit;font-family:inherit;padding:10px 14px;border:3px solid var(--line);border-radius:14px;width:100%;max-width:320px;text-align:center;color:var(--ink)}
+.inp:focus{outline:none;border-color:var(--purple)}
+.acc{display:flex;gap:6px;justify-content:center}.acc button{width:44px;height:42px;border-radius:10px;border:2px solid var(--line);background:#fff;font:800 18px inherit;font-family:inherit;cursor:pointer}
+.end-chart{width:100%;border-collapse:collapse;text-align:center;font-weight:800}.end-chart th,.end-chart td{padding:8px;white-space:nowrap;border-bottom:1px solid var(--line)}.end-chart td:first-child{text-align:left;color:var(--purple)}
+.result{text-align:center}.result .st{font-size:54px;letter-spacing:6px}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:9}
+.confetti i{position:absolute;top:-20px;width:10px;height:14px;border-radius:2px;animation:fall 1.6s linear forwards}
+@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
+.speak{border:0;background:#efeafe;border-radius:99px;padding:4px 10px;cursor:pointer;font-size:15px}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:2px}
+</style></head><body>
+<div class="top"><a href="./">← Study Central</a><span class="stars" id="stars">⭐ 0</span></div>
+<main id="app"></main>
+<div class="confetti" id="conf"></div>
+<script>
+// ---------- CORE DATA ----------
+const END={ar:["o","as","a","amos","áis","an"],er:["o","es","e","emos","éis","en"],ir:["o","es","e","imos","ís","en"]};
+const conj=(v,p)=>v.slice(0,-2)+END[v.slice(-2)][p];
+const ROWS=[["Yo",0],["Tú",1],["Él",2],["Ella",2],["Usted",2],["Nosotras",3],["Nosotros",3],["Vosotros",4],["Vosotras",4],["Ellos",5],["Ellas",5],["Ustedes",5]];
+const VERBS={ar:["bailar","caminar","cantar","cocinar","comprar","escuchar","estudiar","hablar","llorar","mirar","nadar","pintar","preguntar","saltar","terminar","tocar","trabajar","viajar","visitar","andar","acabar","completar"],
+ er:["aprender","beber","comer","correr","creer","deber","leer","vender"],ir:["abrir","asistir","decidir","describir","escribir","partir","recibir","subir","vivir"]};
+const ALLV=[...VERBS.ar,...VERBS.er,...VERBS.ir];
+const MEAN={bailar:"dance",caminar:"walk",cantar:"sing",cocinar:"cook",comprar:"buy",escuchar:"listen",estudiar:"study",hablar:"speak",llorar:"cry",mirar:"watch",nadar:"swim",pintar:"paint",preguntar:"ask",saltar:"jump",terminar:"finish",tocar:"play (instrument)",trabajar:"work",viajar:"travel",visitar:"visit",andar:"walk",acabar:"finish",completar:"complete",aprender:"learn",beber:"drink",comer:"eat",correr:"run",creer:"believe",deber:"have to",leer:"read",vender:"sell",abrir:"open",asistir:"attend",decidir:"decide",describir:"describe",escribir:"write",partir:"leave",recibir:"receive",subir:"go up",vivir:"live"};
+const PRON=[["Yo","I · S"],["Tú","you · S · IFO"],["Él","he · S · M"],["Ella","she · S · F"],["Usted","you · S · FO"],["Nosotros","we · P · M/mixed"],["Nosotras","we · P · F"],["Vosotros","you all · P · M/mixed · IFO"],["Vosotras","you all · P · F · IFO"],["Ellos","they · P · M/mixed"],["Ellas","they · P · F"],["Ustedes","you all · P · FO/IFO"]];
+const SENT=[["Las chicas","muy bien.","bailar",5],["Yo","un libro interesante.","leer",0],["Mis amigos","en Nueva York.","vivir",5],["Vosotras","mucho para el examen.","estudiar",4],["Mi hermano","agua.","beber",2],["Nosotros","las escaleras.","subir",3],["Tú","en el parque.","correr",1],["Ustedes","español en la escuela.","aprender",5],["Nosotras","una carta.","escribir",3],["El profesor","la puerta.","abrir",2],["Yo","música en mi habitación.","escuchar",0],["Los estudiantes","en la cafetería.","comer",5],["Usted","muy bien el italiano.","hablar",2],["Mi madre","la cena.","cocinar",2],["Ellas","ropa en la tienda.","vender",5],["Vosotros","a España en verano.","viajar",4],["Mi amiga","su casa.","describir",2],["Tú","una manzana.","comer",1],["Nosotros","la televisión.","mirar",3],["Los chicos","a la escuela.","asistir",5]];
+const LEVELS=[
+ {id:"chant",n:"Warm-up",t:"🎵 The Endings Song",d:"Hear the endings like a chant. Say them with it!",c:"#ff8a3d"},
+ {id:"chop",n:"Level 1",t:"✂️ Stem Chop",d:"Cut the -ar, -er, -ir off the verb.",c:"#ff4f9a"},
+ {id:"pop",n:"Level 2",t:"🫧 Ending Pop",d:"Pop the bubble with the right ending.",c:"#4f7bff"},
+ {id:"mem",n:"Level 3",t:"🃏 Pronoun Memory",d:"Flip cards to match each pronoun to its meaning.",c:"#8b5cf6"},
+ {id:"build",n:"Level 4",t:"🧱 Build-a-Verb",d:"Snap the stem and the ending together.",c:"#1ec9b7"},
+ {id:"chart",n:"Level 5",t:"🧩 Chart Puzzle",d:"Fill the BEBER / SALTAR / ESCRIBIR chart, like on the test.",c:"#f59e0b"},
+ {id:"det",n:"Level 6",t:"🕵️ Verb Detective",d:"Is the sentence right or wrong? Catch the mistakes!",c:"#ef4444"},
+ {id:"boss",n:"Final Boss",t:"⚡ Lightning Round",d:"60 seconds. Type as many as you can. Beat your record!",c:"#16a34a"}
+];
+const TIPS={
+ chop:"<b>Cheat code:</b> Every verb has a <b>stem</b> (the front) and an <b>ending</b> (-ar, -er, -ir). To conjugate, chop off the ending first: <b>bail</b>|ar · <b>beb</b>|er · <b>escrib</b>|ir.",
+ pop:"<b>Cheat code:</b> <b>Yo</b> is always <b>-o</b>. -AR verbs use <b>A</b>'s (as, a, amos, an). -ER and -IR use <b>E</b>'s (es, e, en). -IR is different only for nosotros (<b>-imos</b>) and vosotros (<b>-ís</b>).",
+ mem:"<b>Cheat code:</b> <b>-os</b> = boys or a mixed group, <b>-as</b> = all girls. <b>Tú</b> is informal (friends), <b>Usted</b> is formal (teachers). S = singular, P = plural, FO = formal, IFO = informal.",
+ build:"<b>Cheat code:</b> Stem + ending = verb. <b>Nosotros</b> + comer → <b>com</b> + <b>emos</b> = comemos.",
+ chart:"<b>Cheat code:</b> Rows that share a form: Él = Ella = Usted · Nosotros = Nosotras · Vosotros = Vosotras · Ellos = Ellas = Ustedes. So you only need 6 forms per verb!",
+ det:"<b>Cheat code:</b> Turn the subject into a pronoun first. <b>Mis amigos</b> = ellos → -an / -en. <b>Mi madre</b> = ella → -a / -e.",
+ boss:"<b>Cheat code:</b> Vosotros ALWAYS has an accent: -<b>áis</b>, -<b>éis</b>, -<b>ís</b>. Use the accent buttons!"
+};
+
+// ---------- STATE ----------
+const KEY="verbos-arcade";let S={stars:{},best:0};
+try{const x=localStorage.getItem(KEY);if(x)S=Object.assign(S,JSON.parse(x));}catch(e){}
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}};
+const totalStars=()=>LEVELS.filter(l=>l.id!=="chant").reduce((a,l)=>a+(S.stars[l.id]||0),0);
+function award(id,pct){const st=pct>=.9?3:pct>=.7?2:pct>0?1:0;if(!(S.stars[id]>=st)){S.stars[id]=st;save();}upd();return st;}
+const upd=()=>{$("#stars").textContent=`⭐ ${totalStars()} / ${3*(LEVELS.length-1)}`;};
+
+// ---------- HELPERS ----------
+const $=s=>document.querySelector(s);
+const R=a=>a[Math.floor(Math.random()*a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const type=v=>v.slice(-2);
+const vt=v=>`<span class="vt t-${type(v)}">${v}</span>`;
+const norm=s=>s.trim().toLowerCase();
+let VOICE=null;function pv(){try{const v=speechSynthesis.getVoices().filter(v=>/^es/i.test(v.lang));VOICE=v.find(x=>/es-ES/i.test(x.lang))||v[0]||null;}catch(e){}}
+try{pv();speechSynthesis.onvoiceschanged=pv;}catch(e){}
+function say(t,rate){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=VOICE?VOICE.lang:"es-ES";if(VOICE)u.voice=VOICE;u.rate=rate||.9;speechSynthesis.speak(u);}catch(e){}}
+const PRAISE=["¡Bien!","¡Genial!","¡Súper!","¡Excelente!","¡Fantástico!","¡Muy bien!","¡Perfecto!"];
+function confetti(n){const c=$("#conf");const cols=["#ff4f9a","#ffd23f","#1ec9b7","#4f7bff","#8b5cf6","#ff8a3d"];
+  for(let i=0;i<(n||40);i++){const e=document.createElement("i");e.style.left=Math.random()*100+"vw";e.style.background=R(cols);e.style.animationDelay=Math.random()*.4+"s";e.style.animationDuration=1.2+Math.random()+"s";c.appendChild(e);setTimeout(()=>e.remove(),2600);}}
+function hud(i,n,score,combo){return `<div class="hud"><span>${i+1} / ${n}</span><span>✅ ${score}</span><span class="combo">${combo>=3?`🔥 x${combo} combo!`:""}</span></div><div class="bar"><i style="width:${i/n*100}%"></i></div>`;}
+function finish(id,score,n,extra){const pct=score/n,st=award(id,pct);if(st===3)confetti(70);
+  const i=LEVELS.findIndex(l=>l.id===id),next=LEVELS[i+1];
+  $("#app").innerHTML=`<div class="card result"><div class="st">${"⭐".repeat(st)}${"☆".repeat(3-st)}</div><h2>${st===3?"¡Increíble! 🎉":st===2?"¡Muy bien! 💪":"Good try! Every round makes it stick 🧠"}</h2>
+   <p class="big" style="font-size:30px">${score} / ${n}</p>${extra||""}
+   <div class="row" style="justify-content:center"><button class="btn" onclick="go('${id}')">Play again</button>${next?`<button class="btn ghost" onclick="go('${next.id}')">Next: ${next.t}</button>`:""}<button class="btn ghost" onclick="home()">Level map</button></div></div>`;}
+function intro(id){return TIPS[id]?`<div class="tip">${TIPS[id]}</div>`:"";}
+
+// ---------- HOME ----------
+function home(){try{speechSynthesis.cancel();}catch(e){}clearInterval(TM);
+  $("#app").innerHTML=`<h1>Verbos Arcade 🎮</h1><p class="sub">Baby steps to the test on Monday. Play the levels in order. Each one is 2–5 minutes. Earn ⭐⭐⭐ on every level and you're ready!</p>
+  <div class="map">${LEVELS.map(l=>`<button class="lvl" style="background:${l.c}" onclick="go('${l.id}')"><span class="n">${l.n}</span><span class="t">${l.t}</span><span class="d">${l.d}</span>${l.id==="chant"?"":`<span class="s">${"⭐".repeat(S.stars[l.id]||0)}${"☆".repeat(3-(S.stars[l.id]||0))}${l.id==="boss"&&S.best?` · record ${S.best}`:""}</span>`}</button>`).join("")}</div>
+  <div class="card"><b>📌 The whole secret on one card</b>${endChart()}<p style="margin:0;color:var(--muted)">Chop off -ar/-er/-ir → add the ending for the pronoun. That's it. You've got this, Olivia! 💜</p></div>`;}
+function endChart(hl){const P=["yo","tú","él / ella / usted","nosotros/as","vosotros/as","ellos / ellas / ustedes"];
+  return `<table class="end-chart"><tr><th></th><th class="t-ar">-AR</th><th class="t-er">-ER</th><th class="t-ir">-IR</th></tr>${P.map((p,i)=>`<tr${hl===i?' style="background:#fff6d6"':""}><td>${p}</td><td class="t-ar">-${END.ar[i]}</td><td class="t-er">-${END.er[i]}</td><td class="t-ir">-${END.ir[i]}</td></tr>`).join("")}</table>`;}
+function go(id){try{speechSynthesis.cancel();}catch(e){}clearInterval(TM);window.scrollTo(0,0);({chant,chop,pop,mem,build,chart,det,boss})[id]();}
+
+// ---------- WARM-UP: CHANT ----------
+function chant(){
+  $("#app").innerHTML=`<div class="card"><h2>🎵 The Endings Song</h2><p>Tap a button and chant along out loud, 3 times each. Your brain remembers rhythms better than lists!</p>
+  <div class="row"><button class="btn" style="background:var(--ar)" onclick="sing('ar')">-AR: o, as, a, amos, áis, an</button></div>
+  <div class="row"><button class="btn" style="background:var(--er)" onclick="sing('er')">-ER: o, es, e, emos, éis, en</button></div>
+  <div class="row"><button class="btn" style="background:var(--ir)" onclick="sing('ir')">-IR: o, es, e, imos, ís, en</button></div>
+  <div class="row"><button class="btn ghost" onclick="singVerb('saltar')">🎤 saltar</button><button class="btn ghost" onclick="singVerb('beber')">🎤 beber</button><button class="btn ghost" onclick="singVerb('escribir')">🎤 escribir</button></div>
+  <div id="karaoke" class="big" style="min-height:50px"></div>
+  ${endChart()}
+  <div class="tip"><b>Notice:</b> -ER and -IR are twins! They only change at <b>nosotros</b> (-emos / -imos) and <b>vosotros</b> (-éis / -ís).</div>
+  <div class="row"><button class="btn" onclick="go('chop')">I'm ready → Level 1</button></div></div>`;}
+function sing(t){const seq=END[t];let i=0;const k=$("#karaoke");try{speechSynthesis.cancel();}catch(e){}
+  seq.forEach((e,j)=>{try{const u=new SpeechSynthesisUtterance(e);u.lang=VOICE?VOICE.lang:"es-ES";if(VOICE)u.voice=VOICE;u.rate=.8;u.onstart=()=>{k.innerHTML=`<span class="t-${t}">-${e}</span>`;};speechSynthesis.speak(u);}catch(err){}});}
+function singVerb(v){const P=["yo","tú","él","nosotros","vosotros","ellos"];const k=$("#karaoke");try{speechSynthesis.cancel();}catch(e){}
+  P.forEach((p,i)=>{try{const f=conj(v,i);const u=new SpeechSynthesisUtterance(p+" "+f);u.lang=VOICE?VOICE.lang:"es-ES";if(VOICE)u.voice=VOICE;u.rate=.85;u.onstart=()=>{k.innerHTML=`${p} <span class="t-${type(v)}">${f}</span>`;};speechSynthesis.speak(u);}catch(e){}});}
+
+// ---------- LEVEL 1: STEM CHOP ----------
+let G={};
+function chop(){G={list:shuffle(ALLV).slice(0,8),i:0,score:0,combo:0,tried:false};$("#app").innerHTML=`<div class="card">${intro("chop")}<div id="g"></div></div>`;chopStep();}
+function chopStep(){if(G.i>=G.list.length)return finish("chop",G.score,G.list.length);
+  const v=G.list[G.i];G.tried=false;
+  $("#g").innerHTML=`${hud(G.i,G.list.length,G.score,G.combo)}<p style="text-align:center;font-weight:700">Tap the first letter of the <b>ending</b> to chop it off ✂️<br><span style="color:var(--muted)">${v} = to ${MEAN[v]}</span></p>
+   <div class="letters">${[...v].map((c,k)=>`<button class="let" data-k="${k}">${c}</button>`).join("")}</div><div id="fb"></div>`;
+  document.querySelectorAll(".let").forEach(b=>b.onclick=()=>{if(G.tried)return;G.tried=true;const k=+b.dataset.k,cut=v.length-2,ok=k===cut;
+    document.querySelectorAll(".let").forEach(x=>{const j=+x.dataset.k;x.disabled=true;x.classList.add(j<cut?"stem":"gone");if(j===cut)x.classList.add("cut");});
+    if(ok){G.score++;G.combo++;}else G.combo=0;
+    $("#fb").innerHTML=`<div class="fb ${ok?"ok":"no"}">${ok?R(PRAISE):"Almost!"} <span>Stem: <b>${v.slice(0,-2)}</b> · ending: <b class="t-${type(v)}">-${type(v)}</b></span></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="nb">Next ➜</button></div>`;
+    $("#nb").onclick=()=>{G.i++;chopStep();};$("#nb").focus();});}
+
+// ---------- LEVEL 2: ENDING POP ----------
+function pop(){G={n:12,i:0,score:0,combo:0};$("#app").innerHTML=`<div class="card">${intro("pop")}<div id="g"></div></div>`;popStep();}
+function popStep(){if(G.i>=G.n)return finish("pop",G.score,G.n);
+  const t=R(["ar","er","ir"]),v=R(VERBS[t]),[pl,p]=R(ROWS),ans=END[t][p];
+  const pool=[...new Set([...END.ar,...END.er,...END.ir])].filter(e=>e!==ans);
+  const opts=shuffle([ans,...shuffle(pool).slice(0,3)]);const cols=["#ff4f9a","#4f7bff","#1ec9b7","#f59e0b"];let done=false;
+  $("#g").innerHTML=`${hud(G.i,G.n,G.score,G.combo)}<div class="big"><span class="pr">${pl}</span> + ${vt(v)}</div>
+   <div class="big" style="font-size:30px">${v.slice(0,-2)}<span class="slot" id="slot" style="min-width:90px">?</span></div>
+   <div class="bubbles">${opts.map((o,k)=>`<button class="bub" style="background:${cols[k]}" data-o="${o}">-${o}</button>`).join("")}</div><div id="fb"></div>`;
+  document.querySelectorAll(".bub").forEach(b=>b.onclick=()=>{if(done)return;const ok=b.dataset.o===ans;
+    if(ok){done=true;b.classList.add("pop");$("#slot").textContent=ans;$("#slot").style.color="var(--good)";G.score+=G.wrong?0:1;G.combo=G.wrong?0:G.combo+1;say(pl+" "+conj(v,p));
+      if(G.combo>0&&G.combo%5===0)confetti(30);
+      $("#fb").innerHTML=`<div class="fb ok">${R(PRAISE)} <span>${pl} <b>${conj(v,p)}</b> (${MEAN[v]})</span></div>`;setTimeout(()=>{G.wrong=false;G.i++;popStep();},1100);}
+    else{b.classList.add("no");b.disabled=true;G.wrong=true;G.combo=0;
+      $("#fb").innerHTML=`<div class="fb no">Try another bubble! <span>${pl} uses the ${p===0?"yo":["","tú","él/ella/usted","nosotros","vosotros","ellos/ellas/ustedes"][p]} ending for -${t.toUpperCase()}.</span></div>`;}});}
+
+// ---------- LEVEL 3: PRONOUN MEMORY ----------
+function mem(){const pick=shuffle(PRON).slice(0,6);const cards=shuffle(pick.flatMap((p,k)=>[{k,txt:`<span class="es">${p[0]}</span>`},{k,txt:p[1]}]));
+  G={cards,open:[],matched:0,moves:0,lock:false};
+  $("#app").innerHTML=`<div class="card">${intro("mem")}<div class="hud"><span>Pairs: <span id="pairs">0</span> / 6</span><span>Flips: <span id="moves">0</span></span></div>
+   <div class="mem">${cards.map((c,i)=>`<button class="mc" data-i="${i}" aria-label="Card"><span style="font-size:30px">?</span></button>`).join("")}</div></div>`;
+  document.querySelectorAll(".mc").forEach(b=>b.onclick=()=>{const i=+b.dataset.i,c=G.cards[i];if(G.lock||b.classList.contains("up")||b.classList.contains("done"))return;
+    b.classList.add("up");b.innerHTML=c.txt;G.open.push([b,c]);
+    if(G.open.length===2){G.moves++;$("#moves").textContent=G.moves;const [[b1,c1],[b2,c2]]=G.open;G.open=[];
+      if(c1.k===c2.k){b1.classList.add("done");b2.classList.add("done");G.matched++;$("#pairs").textContent=G.matched;say(b1.textContent.includes("·")?b2.textContent:b1.textContent);
+        if(G.matched===6){setTimeout(()=>{const sc=G.moves<=8?6:G.moves<=11?5:G.moves<=14?4:3;finish("mem",sc,6,`<p>You finished in ${G.moves} flips. (8 or fewer = ⭐⭐⭐)</p>`);},700);}}
+      else{G.lock=true;setTimeout(()=>{[b1,b2].forEach(x=>{x.classList.remove("up");x.innerHTML='<span style="font-size:30px">?</span>';});G.lock=false;},1000);}}});}
+
+// ---------- LEVEL 4: BUILD-A-VERB ----------
+function build(){G={n:10,i:0,score:0,combo:0};$("#app").innerHTML=`<div class="card">${intro("build")}<div id="g"></div></div>`;buildStep();}
+function buildStep(){if(G.i>=G.n)return finish("build",G.score,G.n);
+  const v=R(ALLV),[pl,p]=R(ROWS),t=type(v),stem=v.slice(0,-2),ans=conj(v,p);
+  const stems=shuffle([stem,v,stem+t[0]]);const ends=shuffle([...new Set([END[t][p],...shuffle([...END.ar,...END.er,...END.ir].filter(e=>e!==END[t][p])).slice(0,4)])]).slice(0,5);
+  if(!ends.includes(END[t][p]))ends[0]=END[t][p];
+  let st=null,en=null,done=false;
+  $("#g").innerHTML=`${hud(G.i,G.n,G.score,G.combo)}<div class="big"><span class="pr">${pl}</span> + ${vt(v)} <span style="font-size:16px;color:var(--muted)">(${MEAN[v]})</span></div>
+   <div style="text-align:center"><span class="slot" id="slot">&nbsp;</span></div>
+   <p style="text-align:center;font-weight:700;margin:0">1) Pick the stem</p><div class="tiles" id="st">${stems.map(s=>`<button class="tile" data-s="${s}">${s}</button>`).join("")}</div>
+   <p style="text-align:center;font-weight:700;margin:0">2) Pick the ending</p><div class="tiles" id="en">${shuffle(ends).map(e=>`<button class="tile end" data-e="${e}">-${e}</button>`).join("")}</div>
+   <div class="row" style="justify-content:center"><button class="btn" id="chk" disabled>Snap it together!</button></div><div id="fb"></div>`;
+  const show=()=>{$("#slot").textContent=(st||"")+(en||"")||" ";$("#chk").disabled=!(st&&en);};
+  document.querySelectorAll("#st .tile").forEach(b=>b.onclick=()=>{if(done)return;st=b.dataset.s;document.querySelectorAll("#st .tile").forEach(x=>x.classList.toggle("sel",x===b));show();});
+  document.querySelectorAll("#en .tile").forEach(b=>b.onclick=()=>{if(done)return;en=b.dataset.e;document.querySelectorAll("#en .tile").forEach(x=>x.classList.toggle("sel",x===b));show();});
+  $("#chk").onclick=()=>{done=true;$("#chk").disabled=true;const ok=st+en===ans;if(ok){G.score++;G.combo++;say(pl+" "+ans);if(G.combo%5===0)confetti(30);}else G.combo=0;
+    $("#slot").style.color=ok?"var(--good)":"var(--bad)";
+    $("#fb").innerHTML=`<div class="fb ${ok?"ok":"no"}">${ok?R(PRAISE):"Not quite!"} <span>${pl} <b>${ans}</b> = ${stem} + ${END[t][p]}${st!==stem?` · Remember: chop off the whole -${t}!`:""}</span></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="nb">Next ➜</button></div>`;
+    $("#nb").onclick=()=>{G.i++;buildStep();};$("#nb").focus();};}
+
+// ---------- LEVEL 5: CHART PUZZLE ----------
+function chart(v){
+  if(!v){$("#app").innerHTML=`<div class="card">${intro("chart")}<h2>🧩 Pick a verb</h2><div class="row">${["beber","saltar","escribir"].map(x=>`<button class="btn" style="background:var(--${type(x)})" onclick="chart('${x}')">${x.toUpperCase()} ${"⭐".repeat(S.stars["chart_"+x]||0)}</button>`).join("")}</div><p style="color:var(--muted);margin:0">These are the 3 verbs in Part 1 of your test. Do all three!</p></div>`;return;}
+  const forms=[...new Set(ROWS.map(r=>conj(v,r[1])))];let sel=null;const fill={};
+  $("#app").innerHTML=`<div class="card"><h2>🧩 ${v.toUpperCase()} <span style="font-size:16px;color:var(--muted)">(${MEAN[v]})</span></h2>
+   <p style="margin:0">Tap a word tile, then tap every box where it goes. Tiles can be used more than once!</p>
+   <div class="tiles" id="pool">${shuffle(forms).map(f=>`<button class="tile" data-f="${f}">${f}</button>`).join("")}</div>
+   <table class="ptab">${ROWS.map(([l,p],r)=>`<tr><td>${l}</td><td><button class="cell" data-r="${r}">&nbsp;</button></td></tr>`).join("")}</table>
+   <div class="row" style="justify-content:center"><button class="btn" id="chk">Check my chart</button></div><div id="fb"></div></div>`;
+  document.querySelectorAll("#pool .tile").forEach(b=>b.onclick=()=>{sel=b.dataset.f;document.querySelectorAll("#pool .tile").forEach(x=>x.classList.toggle("sel",x===b));});
+  document.querySelectorAll(".cell").forEach(c=>c.onclick=()=>{if(c.disabled)return;if(!sel){$("#fb").innerHTML=`<div class="fb no">Pick a word tile first ☝️</div>`;return;}fill[c.dataset.r]=sel;c.textContent=sel;c.classList.add("f");$("#fb").innerHTML="";});
+  $("#chk").onclick=()=>{let ok=0;document.querySelectorAll(".cell").forEach(c=>{const r=+c.dataset.r,a=conj(v,ROWS[r][1]),g=fill[r]===a;if(g)ok++;c.classList.add(g?"ok":"no");c.disabled=true;if(!g)c.textContent=(fill[r]?fill[r]+" → ":"")+a;});
+    $("#chk").disabled=true;const st=award("chart_"+v,ok/12);const all=["beber","saltar","escribir"].map(x=>S.stars["chart_"+x]||0);S.stars.chart=Math.min(...all);save();upd();if(ok===12)confetti(60);
+    $("#fb").innerHTML=`<div class="fb ${ok===12?"ok":"no"}">${ok===12?"¡PERFECTO! 🎉":"Almost!"} <span>${ok} / 12 correct ${"⭐".repeat(st)}. ${ok<12?"The red boxes show the right answer.":""}</span></div>
+    <div class="row" style="justify-content:center;margin-top:10px"><button class="btn" onclick="chart('${v}')">Again</button><button class="btn ghost" onclick="chart()">Other verbs</button><button class="btn ghost" onclick="go('det')">Next level ➜</button></div>`;};}
+
+// ---------- LEVEL 6: DETECTIVE ----------
+function det(){G={list:shuffle(SENT).slice(0,10),i:0,score:0,combo:0};$("#app").innerHTML=`<div class="card">${intro("det")}<div id="g"></div></div>`;detStep();}
+function detStep(){if(G.i>=G.list.length)return finish("det",G.score,G.list.length);
+  const [s,rest,v,p]=G.list[G.i],ans=conj(v,p),right=Math.random()<.4;
+  let shown=ans;if(!right){const others=[0,1,2,3,4,5].filter(q=>conj(v,q)!==ans);shown=conj(v,R(others));}
+  let done=false;
+  $("#g").innerHTML=`${hud(G.i,G.list.length,G.score,G.combo)}<p class="sent">${s} <u>${shown}</u> ${rest}</p><p style="text-align:center;color:var(--muted);margin:0">(${v.toUpperCase()} = to ${MEAN[v]})</p>
+   <div class="row" style="justify-content:center"><button class="btn" style="background:var(--good);box-shadow:0 4px 0 #0f7a36" id="y">✅ Correct</button><button class="btn" style="background:var(--bad);box-shadow:0 4px 0 #9f1239" id="n">❌ Mistake!</button></div><div id="fb"></div>`;
+  const pick=saysRight=>{if(done)return;done=true;const ok=saysRight===right;if(ok){G.score++;G.combo++;if(G.combo%5===0)confetti(30);}else G.combo=0;
+    $("#fb").innerHTML=`<div class="fb ${ok?"ok":"no"}">${ok?(right?"Yes, it's correct! ":"Good catch, detective! 🕵️ "):(right?"It was actually correct. ":"That one had a mistake. ")}<span>${s} <b>${ans}</b> ${rest}${!right?` (not ${shown})`:""}</span></div><div class="row" style="justify-content:center;margin-top:10px"><button class="btn" id="nb">Next ➜</button></div>`;
+    say(`${s} ${ans} ${rest}`);$("#nb").onclick=()=>{G.i++;detStep();};$("#nb").focus();};
+  $("#y").onclick=()=>pick(true);$("#n").onclick=()=>pick(false);}
+
+// ---------- FINAL BOSS: LIGHTNING ----------
+let TM=null;
+function boss(){clearInterval(TM);
+  $("#app").innerHTML=`<div class="card">${intro("boss")}<h2>⚡ Lightning Round</h2><p>You get <b>60 seconds</b>. Type the verb form and press <b>Enter</b>. Wrong answers just show the right one, no penalty. Your record: <b>${S.best||0}</b></p>
+   <div class="row" style="justify-content:center"><button class="btn" onclick="bossGo()">START ⚡</button></div></div>`;}
+function bossGo(){G={left:60,score:0,tries:0,miss:[]};
+  $("#app").innerHTML=`<div class="card"><div class="timer" id="tm">60</div><div class="hud"><span>✅ <span id="sc">0</span></span><span>Record: ${S.best||0}</span></div>
+   <div class="big" id="q"></div><div style="display:flex;justify-content:center"><input class="inp" id="in" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Your answer"></div>
+   <div class="acc">${["á","é","í","ó","ú"].map(c=>`<button type="button" data-c="${c}">${c}</button>`).join("")}</div><div id="fb" style="min-height:52px"></div></div>`;
+  const inp=$("#in");document.querySelectorAll("[data-c]").forEach(b=>{b.onmousedown=e=>e.preventDefault();b.onclick=()=>{const i=inp.selectionStart;inp.value=inp.value.slice(0,i)+b.dataset.c+inp.value.slice(inp.selectionEnd);inp.focus();inp.setSelectionRange(i+1,i+1);};});
+  let cur;const next=()=>{const useChart=Math.random()<.5;const v=useChart?R(["beber","saltar","escribir"]):R(ALLV);const [pl,p]=R(ROWS);cur={v,pl,a:conj(v,p)};$("#q").innerHTML=`<span class="pr">${pl}</span> + ${vt(v)}`;inp.value="";inp.focus();};
+  inp.onkeydown=e=>{if(e.key!=="Enter"||!inp.value.trim())return;G.tries++;const ok=norm(inp.value)===cur.a;
+    if(ok){G.score++;$("#sc").textContent=G.score;$("#fb").innerHTML=`<div class="fb ok">${R(PRAISE)} ${cur.pl} ${cur.a}</div>`;}
+    else{G.miss.push(`${cur.pl} ${cur.a}`);$("#fb").innerHTML=`<div class="fb no">${cur.pl} <span><b>${cur.a}</b>${inp.value.normalize("NFD").replace(/[̀-ͯ]/g,"")===cur.a.normalize("NFD").replace(/[̀-ͯ]/g,"")?" (check the accent!)":""}</span></div>`;}
+    next();};
+  next();
+  TM=setInterval(()=>{G.left--;$("#tm").textContent=G.left;if(G.left<=10)$("#tm").style.color="var(--bad)";
+    if(G.left<=0){clearInterval(TM);const rec=G.score>(S.best||0);if(rec){S.best=G.score;save();confetti(80);}
+      const st=G.score>=15?1:G.score>=10?.8:G.score>=5?.6:0;award("boss",st===1?1:st===.8?.75:st);
+      $("#app").innerHTML=`<div class="card result"><div class="st">${"⭐".repeat(S.stars.boss||0)}</div><h2>${rec?"🏆 NEW RECORD!":"Time's up!"}</h2><p class="big">${G.score} correct</p>
+       <p>15+ = ⭐⭐⭐ · 10+ = ⭐⭐ · 5+ = ⭐</p>${G.miss.length?`<div class="tip"><b>Practice these:</b> ${[...new Set(G.miss)].slice(0,8).join(" · ")}</div>`:""}
+       <div class="row" style="justify-content:center"><button class="btn" onclick="bossGo()">Play again</button><button class="btn ghost" onclick="home()">Level map</button></div></div>`;}},1000);}
+
+upd();home();
+</script></body></html>
